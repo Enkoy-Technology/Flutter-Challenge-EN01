@@ -32,10 +32,67 @@ Your task is to build a real-time chat app with a clean, production-friendly arc
 - Clear separation of UI and business logic.
 
 
-## How to submit
+## How to Submit
 
-1. **Fork** this repository.
-2. Create a branch named with your full name:
-   ```bash
-   git checkout -b feature/your-full-name
+<ol>
+  <li>
+    <p><strong>Fork this repository</strong><br>
+    Click the “Fork” button at the top-right of this page.</p>
+  </li>
+
+  <li>
+    <p><strong>Create a new branch</strong> in your fork named with your full name:</p>
+    <pre><code>git checkout -b feature/your-full-name
+</code></pre>
+  </li>
+
+  <li>
+    <p><strong>Build your solution</strong> on that branch, then stage and commit with clear messages:</p>
+    <pre><code>git add .
+git commit -m "Complete real-time chat challenge"
+</code></pre>
+  </li>
+
+  <li>
+    <p><strong>Push your branch</strong> to your fork:</p>
+    <pre><code>git push origin feature/your-full-name
+</code></pre>
+  </li>
+
+  <li>
+    <p><strong>Open a Pull Request</strong> from your fork to this repository’s <code>main</code> branch.</p>
+    <p><strong>PR title format:</strong></p>
+    <pre><code>Flutter Challenge Submission - Your Full Name
+</code></pre>
+    <p><strong>PR description must include:</strong></p>
+    <ul>
+      <li>Steps to run the app (clear setup)</li>
+      <li>State management used and why</li>
+      <li>Real-time technology used and why (Firestore / Supabase / WebSockets)</li>
+      <li>Architecture overview (folders, services, repositories)</li>
+      <li>Features completed</li>
+      <li>Known limitations or trade-offs</li>
+      <li>Improvements you would make with more time</li>
+      <li>(Optional) Screenshots or a short demo video</li>
+    </ul>
+  </li>
+
+  <li>
+    <p><strong>Automated review</strong><br>
+    CodeRabbit will review your PR automatically. Please write clean, production-quality code.</p>
+  </li>
+</ol>
+
+### If you cannot fork this repository
+- Create your own public GitHub repository
+- Push your solution there
+- Share the repository link with the same README details
+
+### Optional: keep your fork updated
+<pre><code>git remote add upstream https://github.com/&lt;owner&gt;/&lt;repo&gt;.git
+git fetch upstream
+git checkout feature/your-full-name
+git merge upstream/main
+</code></pre>
+
 
