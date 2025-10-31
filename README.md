@@ -63,36 +63,10 @@ git commit -m "Complete real-time chat challenge"
     <p><strong>Open a Pull Request</strong> from your fork to this repository’s <code>main</code> branch.</p>
     <p><strong>PR title format:</strong></p>
     <pre><code>Flutter Challenge Submission - Your Full Name
-</code></pre>
-    <p><strong>PR description must include:</strong></p>
-    <ul>
-      <li>Steps to run the app (clear setup)</li>
-      <li>State management used and why</li>
-      <li>Real-time technology used and why (Firestore / Supabase / WebSockets)</li>
-      <li>Architecture overview (folders, services, repositories)</li>
-      <li>Features completed</li>
-      <li>Known limitations or trade-offs</li>
-      <li>Improvements you would make with more time</li>
-      <li>(Optional) Screenshots or a short demo video</li>
-    </ul>
+</code></pre>  
   </li>
 
-  <li>
-    <p><strong>Automated review</strong><br>
-    CodeRabbit will review your PR automatically. Please write clean, production-quality code.</p>
-  </li>
 </ol>
-
-### If you cannot fork this repository
-- Create your own public GitHub repository
-- Push your solution there
-- Share the repository link with the same README details
-
-### Optional: keep your fork updated
-<pre><code>git remote add upstream https://github.com/&lt;owner&gt;/&lt;repo&gt;.git
-git fetch upstream
-git checkout feature/your-full-name
-git merge upstream/main
 </code></pre>
 
 
