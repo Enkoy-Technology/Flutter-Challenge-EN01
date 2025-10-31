@@ -42,7 +42,7 @@ Your task is to build a real-time chat app with a clean, production-friendly arc
 
   <li>
     <p><strong>Create a new branch</strong> in your fork named with your full name:</p>
-    <pre><code>git checkout -b feature/your-full-name
+    <pre><code>git checkout -b feature/your-first-name
 </code></pre>
   </li>
 
@@ -55,14 +55,14 @@ git commit -m "Complete real-time chat challenge"
 
   <li>
     <p><strong>Push your branch</strong> to your fork:</p>
-    <pre><code>git push origin feature/your-full-name
+    <pre><code>git push origin feature/your-first-name
 </code></pre>
   </li>
 
   <li>
     <p><strong>Open a Pull Request</strong> from your fork to this repository’s <code>main</code> branch.</p>
     <p><strong>PR title format:</strong></p>
-    <pre><code>Flutter Challenge Submission - Your Full Name
+    <pre><code>Flutter Challenge Submission - Your First Name
 </code></pre>  
   </li>
 
