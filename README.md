@@ -20,11 +20,11 @@ Your task is to build a real-time chat app with a clean, production-friendly arc
 - Basic user identity (mock login or random user assignment).
 - Chat list screen showing conversations.
 - Message status (sent/delivered/seen).
-- Offline handling and local caching.
+- Chat Notification
 - Unit tests for message formatting/time utils or basic logic.
 
 ## Engineering expectations
-- Clean, feature-based or layered architecture.
+- Clean, feature-based, or layered architecture.
 - Consistent state management (Riverpod/Bloc/Provider/GetX).
 - Repository pattern for data access.
 - Reusable widgets and clear naming.
