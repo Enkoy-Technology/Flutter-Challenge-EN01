@@ -1,4 +1,7 @@
-# Flutter Real-Time Messaging App Challenge
+<img width="900" height="680" alt="image" src="https://github.com/user-attachments/assets/78ff4712-9a69-4395-8993-b1f4fb8eb646" /># Flutter Real-Time Messaging App Challenge
+
+<img width="900" height="680" alt="image" src="https://github.com/user-attachments/assets/6a8e10b3-1add-4adf-8b53-6c6e9e9cd9d0" />
+
 
 Your task is to build a real-time chat app with a clean, production-friendly architecture.
 
@@ -6,12 +9,12 @@ Your task is to build a real-time chat app with a clean, production-friendly arc
 
 ### Real-time messaging
 - Send and receive messages in real time (Firestore, Supabase Realtime, WebSockets, or similar).
-- Each message shows sender name, text, and a formatted timestamp.
+- Each message shows the sender's name, text, and a formatted timestamp.
 - Messages appear instantly without manual refresh.
 
 ### Chat interface
 - Conversation-style UI (chat bubbles).
-- Auto-scroll to newest message when messages arrive or are sent.
+- Auto-scroll to the newest message when messages arrive or are sent.
 - Input field at the bottom to compose and send.
 
 ### Bonus (optional)
@@ -29,8 +32,6 @@ Your task is to build a real-time chat app with a clean, production-friendly arc
 - Error, empty, and loading states.
 - Clear separation of UI and business logic.
 
-## How to run
-Include all steps here in your submission (service keys, emulators, etc.).
 
 ## How to submit
 
