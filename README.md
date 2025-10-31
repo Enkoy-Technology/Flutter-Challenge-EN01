@@ -1,8 +1,7 @@
-<img width="900" height="680" alt="image" src="https://github.com/user-attachments/assets/78ff4712-9a69-4395-8993-b1f4fb8eb646" /># Flutter Real-Time Messaging App Challenge
-
-<img width="900" height="680" alt="image" src="https://github.com/user-attachments/assets/6a8e10b3-1add-4adf-8b53-6c6e9e9cd9d0" />
+<img width="900" height="680" alt="image" src="https://github.com/user-attachments/assets/78ff4712-9a69-4395-8993-b1f4fb8eb646" />
 
 
+# Flutter Real-Time Messaging App Challenge
 Your task is to build a real-time chat app with a clean, production-friendly architecture.
 
 ## Requirements
