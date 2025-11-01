@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'core/config/app_router.dart';
 import 'core/config/theme.dart';
 import 'core/di/injector.dart';
 import 'firebase_options.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,10 +17,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
+    return MaterialApp(
       title: 'Flutter Chat App',
       theme: AppTheme.lightTheme,
-      routerConfig: AppRouter.router,
+      onGenerateRoute: AppRouter.onGenerateRoute,
+      initialRoute: AppRouter.login,
       debugShowCheckedModeBanner: false,
     );
   }
