@@ -2,6 +2,7 @@ import 'package:enkoy_chat/interfaces/iauth.interface.dart';
 import 'package:enkoy_chat/models/ResponseData.dart';
 import 'package:enkoy_chat/models/UserAccount.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -109,8 +110,71 @@ class FirebaseAuthService implements IAuthService {
 
   @override
   Future<ResponseData<UserAccount?>> loginWithGoogle() async {
-    ///ToDO: implement loginWithGoogle
-    throw UnimplementedError();
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) {
+        return ResponseData<UserAccount?>(
+            isSuccessful: false, errorMessages: ["Sign in aborted by user"]);
+      }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+      final User? user = userCredential.user;
+
+      if (user != null) {
+        String displayName = googleUser.displayName ?? "";
+        String firstName = displayName.split(' ').isNotEmpty
+            ? displayName.split(' ').first
+            : (user.email?.split('@').first ?? "User");
+        String? lastName;
+        final nameParts = displayName.split(' ');
+        if (nameParts.length > 1) {
+          lastName = nameParts.sublist(1).join(' ');
+        }
+
+        UserAccount account = UserAccount(
+          firstName: firstName,
+          lastName: lastName,
+          email: user.email ?? googleUser.email,
+          uid: user.uid,
+          pictureUrl: googleUser.photoUrl,
+          lastUpdatedAt: DateTime.now(),
+        );
+
+        // Save or merge the user document in Firestore
+        Fluttertoast.showToast(
+            msg: "Signed-in successfully",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        await _firestore
+            .collection(_usersCollectionPath)
+            .doc(user.uid)
+            .set(account.toJson(), SetOptions(merge: true));
+
+        return ResponseData<UserAccount?>(isSuccessful: true, data: account);
+      }
+
+      return ResponseData<UserAccount?>(
+          isSuccessful: false,
+          errorMessages: ["Unable to sign in with Google at this time."]);
+    } catch (e) {
+      debugPrint(e.toString());
+      return ResponseData<UserAccount?>(
+          isSuccessful: false, errorMessages: [e.toString()]);
+    }
   }
 
   @override

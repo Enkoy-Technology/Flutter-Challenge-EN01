@@ -30,6 +30,7 @@ class LoginViewModel extends BaseViewModel {
   // String? get savedEmail => _appSettingProvider.savedUserPhoneNumber;
 
   bool isNormalLoginProcessing = false;
+  bool isGoogleLoginProcessing = false;
 
   toggleShowPassword() {
     _showPassword = !_showPassword;
@@ -65,6 +66,23 @@ class LoginViewModel extends BaseViewModel {
         isNormalLoginProcessing = false;
         rebuildUi();
       }
+    }
+  }
+
+  onLoginWithGoogle() async {
+    isGoogleLoginProcessing = true;
+    rebuildUi();
+    setError(null);
+    try {
+      var res = await _authService.loginWithGoogle();
+      if (!res.isSuccessful) {
+        setError(res.errorMessages.join('\n'));
+      }
+    } catch (e) {
+      setError("Got unhandled error.");
+    } finally {
+      isGoogleLoginProcessing = false;
+      rebuildUi();
     }
   }
 

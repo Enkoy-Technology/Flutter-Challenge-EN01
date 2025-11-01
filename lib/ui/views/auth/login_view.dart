@@ -2,6 +2,7 @@ import 'package:enkoy_chat/ui/common/app_colors.dart';
 import 'package:enkoy_chat/ui/common/dimension.dart';
 import 'package:enkoy_chat/ui/common/font.dart';
 import 'package:enkoy_chat/ui/common/icons.dart';
+import 'package:enkoy_chat/ui/common/widgets/app_image.dart';
 import 'package:enkoy_chat/ui/common/widgets/auth_button.dart';
 import 'package:enkoy_chat/ui/common/widgets/error_message_widget.dart';
 import 'package:enkoy_chat/ui/common/widgets/text_field_widget.dart';
@@ -78,6 +79,28 @@ class LoginView extends StackedView<LoginViewModel> {
                           ),
                         ),
                         kdSpace.height,
+                        SizedBox(
+                          width: kdScreenWidth(context),
+                          child: AuthButton(
+                            outlineMode: true,
+                            onPressed: viewModel.onLoginWithGoogle,
+                            titleWidget: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const AppImageWidget(
+                                  url: "assets/images/icon_google.png",
+                                  width: kdSmallSquareAvatar,
+                                  height: kdSmallSquareAvatar,
+                                  isFromLocalAsset: true,
+                                ),
+                                kdSpaceTiny.width,
+                                const Text("Sign In with Google")
+                              ],
+                            ),
+                            isBusy: viewModel.isGoogleLoginProcessing,
+                          ),
+                        ),
+                        kdSpaceLarge.height,
                         Align(
                           alignment: Alignment.bottomRight,
                           child: TextButton(
