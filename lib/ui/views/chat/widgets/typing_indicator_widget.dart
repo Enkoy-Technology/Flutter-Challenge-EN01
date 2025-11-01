@@ -4,14 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class TypingIndicatorWidget extends StatelessWidget {
-  const TypingIndicatorWidget({super.key});
+  final Color? color;
+  const TypingIndicatorWidget({super.key, this.color});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         SpinKitThreeBounce(
-          color: kcPrimary(context),
+          color: color ?? kcOnPrimary(context),
           size: 10,
         ),
         const SizedBox(
@@ -19,7 +20,7 @@ class TypingIndicatorWidget extends StatelessWidget {
         ),
         Text(
           "typing",
-          style: kfLabelSmall(context, color: kcPrimary(context)),
+          style: kfLabelSmall(context, color: color ?? kcOnPrimary(context)),
         )
       ],
     );
