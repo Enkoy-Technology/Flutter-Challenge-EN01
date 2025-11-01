@@ -193,16 +193,7 @@ class ChatConversationView extends StackedView<ChatConversationViewModel> {
               ],
             ),
             centerTitle: false,
-            actions: const [
-              Padding(
-                padding: EdgeInsets.only(right: kdPaddingLarge),
-                child: InkWell(
-                    child: Icon(
-                  kiAdd,
-                  size: kfIconLarge,
-                )),
-              )
-            ],
+            actions: const [],
           ),
           SliverFillRemaining(
             child: StreamBuilder<List<Chat>>(

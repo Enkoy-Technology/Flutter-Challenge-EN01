@@ -31,6 +31,64 @@ class ChatListView extends StackedView<ChatListViewModel> {
       canPop: false,
       onPopInvoked: viewModel.onPopScope,
       child: Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: viewModel.onAddChat,
+            backgroundColor: kcSecondary(context),
+            child: Icon(kiAdd, color: kcOnPrimary(context)),
+          ),
+          bottomNavigationBar: SafeArea(
+            top: false,
+            child: Container(
+              color: kcWhite,
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: List.generate(5, (i) {
+                  final selected = viewModel.selectedTabIndex == i;
+                  final color = selected ? kcPrimary(context) : kcGrey;
+                  final labelStyle = kfBodySmall(context,
+                      color: selected ? kcPrimary(context) : kcGrey);
+                  IconData iconData;
+                  String label;
+                  switch (i) {
+                    case 0:
+                      iconData = kiChat;
+                      label = 'Chat';
+                      break;
+                    case 1:
+                      iconData = kiCall;
+                      label = 'Call';
+                      break;
+                    case 2:
+                      iconData = kiCamera;
+                      label = 'Story';
+                      break;
+                    case 3:
+                      iconData = kiContact;
+                      label = 'Contact';
+                      break;
+                    default:
+                      iconData = kiAdd;
+                      label = 'Profile';
+                  }
+
+                  return Expanded(
+                    child: InkWell(
+                      onTap: () => viewModel.onSelectTab(i),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(iconData, color: color, size: 20),
+                          kdSpaceTiny.height,
+                          Text(label, style: labelStyle),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ),
+          ),
           backgroundColor: kcBackground(context).withOpacity(0.95),
           body: CustomScrollView(slivers: [
             AppBarWidget(

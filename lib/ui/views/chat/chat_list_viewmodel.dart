@@ -60,4 +60,14 @@ class ChatListViewModel extends BaseViewModel {
       SystemNavigator.pop();
     }
   }
+
+  int selectedTabIndex = 0;
+
+  void onSelectTab(int index) {
+    //TODO: Handle tab selection
+    selectedTabIndex = index;
+    notifyListeners();
+  }
+
+  void onAddChat() {}
 }
