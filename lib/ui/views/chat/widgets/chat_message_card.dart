@@ -5,6 +5,7 @@ import 'package:enkoy_chat/ui/common/dimension.dart';
 import 'package:enkoy_chat/ui/common/font.dart';
 import 'package:enkoy_chat/ui/common/utils/avatar_utils.dart';
 import 'package:enkoy_chat/ui/common/utils/datetime_utils.dart';
+import 'package:enkoy_chat/ui/common/widgets/app_image.dart';
 import 'package:enkoy_chat/ui/views/chat/widgets/chat_message_status_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -48,27 +49,72 @@ class ChatMessageCard extends StatelessWidget {
   }
 
   Container messageContent(BuildContext context) {
-    Color bgColor = isMyMesssage ? kcPrimary(context) : kcWhite;
+    Color bgColor = isMyMesssage ? kcSecondary(context) : kcWhite;
     Color textColor = isMyMesssage
-        ? kcOnPrimary(context).withOpacity(0.75)
+        ? kcOnPrimary(context).withOpacity(0.95)
         : kcOnBackground(context).withOpacity(0.75);
+
+    final hasAttachment = chat.message.attachmentUrl != null &&
+        chat.message.attachmentUrl!.isNotEmpty;
+    final caption = chat.message.caption;
+    final messageText = chat.message.text;
+
     return Container(
       constraints: BoxConstraints(
-          maxWidth: kdScreenWidth(context) * .7,
-          minWidth: kdScreenWidth(context) * .25),
-      padding: const EdgeInsets.only(top: kdPadding, left: kdPadding),
+        maxWidth: kdScreenWidth(context) * .7,
+        minWidth: kdScreenWidth(context) * .25,
+      ),
+      // remove inner padding so attachment can be edge-to-edge
+      padding: EdgeInsets.zero,
       decoration: BoxDecoration(color: bgColor, borderRadius: _getCardBorder()),
       child: Stack(
         children: [
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(right: kdPaddingSmall),
-                child: Text(
-                  chat.message.text ?? "",
-                  style: kfBodyMedium(context, color: textColor),
+              if (hasAttachment) ...[
+                ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topLeft:
+                        Radius.circular(isMyMesssage ? kdRoundedRadius : 2),
+                    topRight:
+                        Radius.circular(isMyMesssage ? 2 : kdRoundedRadius),
+                  ),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxHeight: 300),
+                    child: AppImageWidget(
+                      url: chat.message.attachmentUrl!,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),
+                  ),
                 ),
-              ),
+                if (caption != null && caption.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: kdPaddingSmall,
+                        left: kdPadding,
+                        right: kdPaddingSmall),
+                    child: Text(
+                      caption,
+                      style: kfBodyMedium(context, color: textColor),
+                    ),
+                  ),
+                kdSpaceSmall.height,
+              ] else ...[
+                const SizedBox(height: kdPadding),
+              ],
+              if (messageText != null && messageText.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: kdPaddingSmall,
+                      left: kdPadding,
+                      right: kdPaddingSmall),
+                  child: Text(
+                    messageText,
+                    style: kfBodyMedium(context, color: textColor),
+                  ),
+                ),
               kdSpaceXLarge.height
             ],
           ),
@@ -78,10 +124,13 @@ class ChatMessageCard extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  DateTimeUtils.formatTime(chat.message.createdAt!),
-                  textAlign: TextAlign.right,
-                  style: kfBodySmall(context, color: textColor),
+                Padding(
+                  padding: const EdgeInsets.only(right: kdPaddingSmall),
+                  child: Text(
+                    DateTimeUtils.formatTime(chat.message.createdAt!),
+                    textAlign: TextAlign.right,
+                    style: kfBodySmall(context, color: textColor),
+                  ),
                 ),
                 Visibility(
                     visible: isMyMesssage,

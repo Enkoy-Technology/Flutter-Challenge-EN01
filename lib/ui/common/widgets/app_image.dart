@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -5,8 +6,8 @@ class AppImageWidget extends StatelessWidget {
   final String url;
   final bool isFromLocalAsset;
   final bool isCacheable;
-  final double width;
-  final double height;
+  final double? width;
+  final double? height;
   final BoxFit fit;
   final Color? color;
   const AppImageWidget({
@@ -14,8 +15,8 @@ class AppImageWidget extends StatelessWidget {
     required this.url,
     this.isFromLocalAsset = false,
     this.isCacheable = true,
-    this.width = 50,
-    this.height = 50,
+    this.width,
+    this.height,
     this.fit = BoxFit.cover,
     this.color,
   });
@@ -24,9 +25,8 @@ class AppImageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Visibility(
       visible: isFromLocalAsset,
-      //TODO implement cached network image
-      replacement: Image.network(
-        url,
+      replacement: CachedNetworkImage(
+        imageUrl: url,
         width: width,
         height: height,
         fit: fit,
