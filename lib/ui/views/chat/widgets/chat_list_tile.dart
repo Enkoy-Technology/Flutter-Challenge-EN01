@@ -42,7 +42,7 @@ class ChatListTile extends StatelessWidget {
                             visible: !snapshot.hasData || conversee == null,
                             replacement: AvatarUtils.getAvatar(context,
                                 showOutlineBorder: true,
-                                color: kcPrimary(context),
+                                color: kcGreen,
                                 userAccount: chatConversation.conversee!),
                             child: AvatarUtils.getAvatar(context,
                                 userAccount: chatConversation.conversee!)),
@@ -62,7 +62,9 @@ class ChatListTile extends StatelessWidget {
                             style: kfBodySmall(context,
                                 color: kcLightGreyish(context)),
                           ),
-                          child: const TypingIndicatorWidget(),
+                          child: TypingIndicatorWidget(
+                            color: kcPrimary(context),
+                          ),
                         ),
                         trailing: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,

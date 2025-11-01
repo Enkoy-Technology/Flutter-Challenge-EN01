@@ -34,18 +34,29 @@ class ChatListView extends StackedView<ChatListViewModel> {
           backgroundColor: kcBackground(context).withOpacity(0.95),
           body: CustomScrollView(slivers: [
             AppBarWidget(
-              title: "Chats",
+              leading: Icon(
+                kiMenu,
+                color: kcOnPrimary(context),
+              ),
+              title: "Message",
               automaticallyImplyLeading: false,
               actions: [
                 InkWell(
                   onTap: viewModel.onTapSearch,
-                  child: const Icon(kiSearch),
+                  child: Icon(
+                    kiSearch,
+                    color: kcOnPrimary(context),
+                  ),
                 ),
                 InkWell(
                   onTap: viewModel.onLogout,
-                  child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: kdPaddingLarge),
-                      child: Icon(kiLogout)),
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: kdPaddingLarge),
+                      child: Icon(
+                        kiLogout,
+                        color: kcOnPrimary(context),
+                      )),
                 ),
               ],
             ),

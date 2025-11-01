@@ -11,6 +11,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class ChatConversationViewModel extends BaseViewModel {
   final ChatConversation chatConversationBase;
@@ -18,6 +19,7 @@ class ChatConversationViewModel extends BaseViewModel {
   ChatConversationViewModel({required this.chatConversationBase});
 
   final ChatService _chatService = locator<ChatService>();
+  final _navigationService = locator<NavigationService>();
 
   TextEditingController chatTextInputController = TextEditingController();
 
@@ -115,5 +117,9 @@ class ChatConversationViewModel extends BaseViewModel {
       _chatService.updateTypingStatus(isTyping: false);
       typingTimerUpdater?.cancel();
     });
+  }
+
+  void onBack() {
+    _navigationService.back();
   }
 }

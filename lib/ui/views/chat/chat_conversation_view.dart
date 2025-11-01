@@ -4,6 +4,7 @@ import 'package:enkoy_chat/ui/common/app_colors.dart';
 import 'package:enkoy_chat/ui/common/dimension.dart';
 import 'package:enkoy_chat/ui/common/font.dart';
 import 'package:enkoy_chat/ui/common/icons.dart';
+import 'package:enkoy_chat/ui/common/utils/avatar_utils.dart';
 import 'package:enkoy_chat/ui/common/widgets/app_bar_widget.dart';
 import 'package:enkoy_chat/ui/common/widgets/loading_indicator.dart';
 import 'package:enkoy_chat/ui/views/chat/widgets/chat_message_card.dart';
@@ -142,23 +143,43 @@ class ChatConversationView extends StackedView<ChatConversationViewModel> {
         ),
         body: CustomScrollView(slivers: [
           AppBarWidget(
+            leading: GestureDetector(
+                onTap: viewModel.onBack,
+                child: Icon(kiArrowBack, color: kcOnPrimary(context))),
             titleWidget: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(
-                  chatConversation.conversee!.firstName,
-                  style: kfBrandStyle(context, fontWeight: FontWeight.w600),
+                Row(
+                  children: [
+                    AvatarUtils.getAvatar(
+                      context,
+                      userAccount: chatConversation.conversee!,
+                      radius: 18,
+                    ),
+                    kdSpace.width,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          chatConversation.conversee!.firstName,
+                          style: kfBrandStyle(context,
+                              fontWeight: FontWeight.w600,
+                              color: kcOnPrimary(context)),
+                        ),
+                        StreamBuilder<Map<String, dynamic>?>(
+                            stream: viewModel.getConverseeOnlineStatus(),
+                            builder: ((ctx, snapshot) {
+                              if (snapshot.data == null || !snapshot.hasData) {
+                                return Container();
+                              }
+                              dynamic data = snapshot.data;
+                              return _renderConverseeStatus(data, context);
+                            }))
+                      ],
+                    ),
+                  ],
                 ),
-                StreamBuilder<Map<String, dynamic>?>(
-                    stream: viewModel.getConverseeOnlineStatus(),
-                    builder: ((ctx, snapshot) {
-                      if (snapshot.data == null || !snapshot.hasData) {
-                        return Container();
-                      }
-                      dynamic data = snapshot.data;
-                      return _renderConverseeStatus(data, context);
-                    }))
               ],
             ),
             centerTitle: false,
@@ -258,11 +279,11 @@ class ChatConversationView extends StackedView<ChatConversationViewModel> {
     }
     return Row(
       children: [
-        CircleAvatar(radius: 2, backgroundColor: kcPrimary(context)),
+        CircleAvatar(radius: 2, backgroundColor: kcOnPrimary(context)),
         kdSpaceTiny.width,
         Text(
           "online",
-          style: kfBodySmall(context),
+          style: kfBodySmall(context, color: kcOnPrimary(context)),
         ),
       ],
     );

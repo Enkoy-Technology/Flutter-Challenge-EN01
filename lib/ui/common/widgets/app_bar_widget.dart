@@ -1,3 +1,4 @@
+import 'package:enkoy_chat/ui/common/app_colors.dart';
 import 'package:enkoy_chat/ui/common/font.dart';
 import 'package:enkoy_chat/ui/common/icons.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class AppBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverAppBar(
       centerTitle: centerTitle,
+      backgroundColor: kcSecondary(context),
       titleSpacing: 0,
       floating: true,
       pinned: true,
@@ -45,7 +47,7 @@ class AppBarWidget extends StatelessWidget {
       title: titleWidget ??
           Text(
             title ?? "",
-            style: kfBodyMedium(context),
+            style: kfBodyMedium(context, color: kcOnPrimary(context)),
           ),
       actions: actions,
     );
