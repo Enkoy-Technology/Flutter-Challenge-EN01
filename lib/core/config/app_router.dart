@@ -25,11 +25,12 @@ class AppRouter {
       case chats:
         return MaterialPageRoute(builder: (_) => const ChatListScreen());
       case chatScreen:
-        final args = settings.arguments as Map<String, dynamic>;
+        final arguments = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
           builder: (_) => ChatScreen(
-            chatId: args['chatId'],
-            receiverName: args['receiverName'],
+            chatId: arguments['chatId'],
+            receiverName: arguments['receiverName'],
+            receiverId: arguments['receiverId'],
           ),
         );
       case home:

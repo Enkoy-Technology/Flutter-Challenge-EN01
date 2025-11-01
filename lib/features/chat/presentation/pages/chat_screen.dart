@@ -9,11 +9,13 @@ import '../widgets/message_input_field.dart';
 class ChatScreen extends StatelessWidget {
   final String chatId;
   final String receiverName;
+  final String receiverId;
 
   const ChatScreen({
     super.key,
     required this.chatId,
     required this.receiverName,
+    required this.receiverId,
   });
 
   @override
@@ -32,7 +34,7 @@ class ChatScreen extends StatelessWidget {
                   } else if (state is ChatLoaded) {
                     final messages = state.messages;
                     return ListView.builder(
-                      reverse: true,
+                      reverse: true, // This will show latest at bottom
                       itemCount: messages.length,
                       itemBuilder: (context, index) {
                         final message = messages[index];
@@ -48,7 +50,7 @@ class ChatScreen extends StatelessWidget {
                 },
               ),
             ),
-            MessageInputField(chatId: chatId),
+            MessageInputField(chatId: chatId, receiverId: receiverId),
           ],
         ),
       ),

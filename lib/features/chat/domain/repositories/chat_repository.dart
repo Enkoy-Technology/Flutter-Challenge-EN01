@@ -4,5 +4,7 @@ import '../../data/models/chat_user.dart';
 abstract class ChatRepository {
   Stream<List<MessageModel>> getMessages(String chatId);
   Future<void> sendMessage(String chatId, MessageModel message);
-  Stream<List<ChatUser>> getAllUsers(String currentUserId);
+  Stream<List<ChatUser>> getAllUsersWithRealtimeLastMessage(
+    String currentUserId,
+  );
 }

@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chat_app/core/config/app_constants.dart';
-
 import '../bloc/chat_bloc.dart';
 import '../../data/models/message_model.dart';
 import 'package:uuid/uuid.dart';
 
 class MessageInputField extends StatefulWidget {
   final String chatId;
-  const MessageInputField({super.key, required this.chatId});
+  final String receiverId;
+
+  const MessageInputField({
+    super.key,
+    required this.chatId,
+    required this.receiverId,
+  });
 
   @override
   State<MessageInputField> createState() => _MessageInputFieldState();
@@ -19,11 +24,11 @@ class _MessageInputFieldState extends State<MessageInputField> {
 
   void sendMessage() {
     if (controller.text.trim().isEmpty) return;
-
+    print(" widget.receiverId ${widget.receiverId}");
     final message = MessageModel(
       id: const Uuid().v4(),
       senderId: AppConstants.currentUserId,
-      receiverId: widget.chatId,
+      receiverId: widget.receiverId, // Use the actual receiver ID
       content: controller.text.trim(),
       timestamp: DateTime.now(),
     );
@@ -48,6 +53,7 @@ class _MessageInputFieldState extends State<MessageInputField> {
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                   ),
                 ),
+                onSubmitted: (_) => sendMessage(),
               ),
             ),
             IconButton(icon: const Icon(Icons.send), onPressed: sendMessage),
