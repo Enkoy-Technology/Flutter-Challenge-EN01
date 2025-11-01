@@ -38,15 +38,16 @@ class SearchUserView extends StackedView<SearchUserViewModel> {
                       borderRadius: 2,
                       hintText: "Type user email...",
                       onChanged: viewModel.onSearchValChanged,
-                    ),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Center(
-                    child: Visibility(
-                      visible: viewModel.busy(viewModel.searchResults),
-                      child: SpinKitHourGlass(
-                        color: kcPrimary(context),
+                      suffixWidget: Visibility(
+                        visible: viewModel.busy(viewModel.searchResults),
+                        child: SizedBox(
+                          height: kdSmallSquareAvatar,
+                          width: kdSmallSquareAvatar,
+                          child: SpinKitHourGlass(
+                            size: kdSmallSquareAvatar,
+                            color: kcPrimary(context),
+                          ),
+                        ),
                       ),
                     ),
                   ),
