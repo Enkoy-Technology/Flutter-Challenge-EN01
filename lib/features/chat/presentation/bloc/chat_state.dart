@@ -1,9 +1,17 @@
 part of 'chat_bloc.dart';
 
-abstract class ChatState extends Equatable {
-  const ChatState();  
+abstract class ChatState {}
 
-  @override
-  List<Object> get props => [];
-}
 class ChatInitial extends ChatState {}
+
+class ChatLoading extends ChatState {}
+
+class ChatLoaded extends ChatState {
+  final List<MessageModel> messages;
+  ChatLoaded(this.messages);
+}
+
+class ChatError extends ChatState {
+  final String message;
+  ChatError(this.message);
+}

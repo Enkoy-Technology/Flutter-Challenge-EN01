@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 
 import 'core/config/app_router.dart';
 import 'core/config/theme.dart';
@@ -14,6 +15,15 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await setupInjector();
+  Logger.root.level = Level.ALL; // Set the minimum logging level
+  Logger.root.onRecord.listen((record) {
+    print('${record.level.name}: ${record.time}: ${record.message}');
+    if (record.error != null) {
+      print('Error: ${record.error}');
+      print('Stack Trace: ${record.stackTrace}');
+    }
+  });
+
   runApp(const MyApp());
 }
 
