@@ -1,27 +1,37 @@
 import 'package:flutter/material.dart';
 import '../../features/auth/presentation/pages/login_screen.dart';
 import '../../features/auth/presentation/pages/register_screen.dart';
-// import '../../features/chat/presentation/pages/chat_list_screen.dart';
-// import '../../features/profile/presentation/pages/profile_screen.dart';
+import '../../features/auth/presentation/pages/splash_screen.dart';
+import '../../features/chat/presentation/pages/chat_list_screen.dart';
+import '../../features/chat/presentation/pages/chat_screen.dart';
 
 class AppRouter {
-  static const String login = '/login';
-  static const String register = '/register';
-  static const String chats = '/chats';
-  static const String profile = '/profile';
+  static const login = '/login';
+  static const register = '/register';
+  static const chats = '/chats';
+  static const chatScreen = '/chat-screen';
+  static const splash = '/splash';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case splash:
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
       case login:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case register:
         return MaterialPageRoute(builder: (_) => const RegisterScreen());
-      // case chats:
-      //   return MaterialPageRoute(builder: (_) => const ChatListScreen());
-      // case profile:
-      //   return MaterialPageRoute(builder: (_) => const ProfileScreen());
+      case chats:
+        return MaterialPageRoute(builder: (_) => const ChatListScreen());
+      case chatScreen:
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => ChatScreen(
+            chatId: args['chatId'],
+            receiverName: args['receiverName'],
+          ),
+        );
       default:
-        return MaterialPageRoute(builder: (_) => const LoginScreen());
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
     }
   }
 }

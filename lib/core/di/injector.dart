@@ -12,6 +12,7 @@ import 'package:flutter_chat_app/features/chat/domain/repositories/chat_reposito
 import 'package:flutter_chat_app/features/chat/domain/usecases/get_messages_usecase.dart';
 import 'package:flutter_chat_app/features/chat/domain/usecases/send_message_usecase.dart';
 import 'package:flutter_chat_app/features/chat/presentation/bloc/chat_bloc.dart';
+import 'package:flutter_chat_app/features/chat/presentation/bloc/cubit/chat_list_cubit.dart';
 import 'package:get_it/get_it.dart';
 import '../services/firebase_auth_service.dart';
 import '../services/firestore_service.dart';
@@ -40,6 +41,7 @@ Future<void> setupInjector() async {
   // Cubits & Blocs
   sl.registerFactory(() => LoginCubit(sl()));
   sl.registerFactory(() => RegisterCubit(sl()));
+
   sl.registerLazySingleton(() => AuthBloc(sl()));
 
   // Remote Sources
@@ -58,4 +60,7 @@ Future<void> setupInjector() async {
   sl.registerFactory(
     () => ChatBloc(getMessagesUseCase: sl(), sendMessageUseCase: sl()),
   );
+
+  // Cubit
+  sl.registerFactory(() => ChatListCubit(repository: sl()));
 }

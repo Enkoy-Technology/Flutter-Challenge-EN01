@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_chat_app/features/chat/presentation/bloc/chat_bloc.dart';
 import 'package:logging/logging.dart';
 
 import 'core/config/app_router.dart';
@@ -37,12 +38,13 @@ class MyApp extends StatelessWidget {
         BlocProvider<AuthBloc>(create: (_) => sl<AuthBloc>()),
         BlocProvider<LoginCubit>(create: (_) => sl<LoginCubit>()),
         BlocProvider<RegisterCubit>(create: (_) => sl<RegisterCubit>()),
+        BlocProvider<ChatBloc>(create: (_) => sl<ChatBloc>()),
       ],
       child: MaterialApp(
         title: 'Flutter Chat App',
         theme: AppTheme.lightTheme,
         onGenerateRoute: AppRouter.onGenerateRoute,
-        initialRoute: AppRouter.login,
+        initialRoute: AppRouter.splash,
         debugShowCheckedModeBanner: false,
       ),
     );
