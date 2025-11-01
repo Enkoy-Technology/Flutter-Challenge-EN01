@@ -6,6 +6,7 @@ import 'package:enkoy_chat/models/UserAccount.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 /// ChatService
 ///
@@ -298,5 +299,22 @@ class ChatService {
         .collection(_usersCollectionPath)
         .doc(_me.uid)
         .update({"lastUpdatedAt": FieldValue.serverTimestamp()});
+  }
+
+  Future<String?> uploadImage(XFile? imageFile) async {
+    /// Due to firebase storage require billing project, I am skipping the actual upload part
+    try {
+      if (imageFile == null) return null;
+
+      /// TODO
+
+      /// Any image compression logic can be added here
+      /// For example, using flutter_image_compress package
+      /// Upload image to firebase storage and return the download url
+      /// By: Amanuel.T (AKA: Emant)
+    } catch (e) {
+      //
+    }
+    return null;
   }
 }

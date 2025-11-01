@@ -6,10 +6,13 @@ import 'package:enkoy_chat/models/Chat.dart';
 import 'package:enkoy_chat/models/ChatConversation.dart';
 import 'package:enkoy_chat/models/ChatMessage.dart';
 import 'package:enkoy_chat/services/chat_service.dart';
+import 'package:enkoy_chat/ui/common/utils/app_dialog_utils.dart';
 import 'package:enkoy_chat/ui/common/utils/datetime_utils.dart';
 import 'package:collection/collection.dart';
+import 'package:enkoy_chat/ui/views/chat/widgets/chat_picture_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -71,16 +74,27 @@ class ChatConversationViewModel extends BaseViewModel {
     rebuildUi();
   }
 
-  void onSendChatMessage() {
-    ChatMessage chatMessage = ChatMessage(
-        text: chatTextInputController.text, contentType: ChatMessageType.text);
-    _chatService.sendMessage(
-        latestConversation ?? chatConversationBase, chatMessage);
+  void onSendChatMessage({String? caption, String? attachmentUrl}) {
+    try {
+      ChatMessageType messageType = ChatMessageType.text;
+      if (attachmentUrl != null && attachmentUrl.isNotEmpty) {
+        messageType = ChatMessageType.picture;
+      }
+      ChatMessage chatMessage = ChatMessage(
+          text: chatTextInputController.text,
+          caption: caption,
+          attachmentUrl: attachmentUrl,
+          contentType: messageType);
+      _chatService.sendMessage(
+          latestConversation ?? chatConversationBase, chatMessage);
 
-    chatTextInputController.clear();
+      chatTextInputController.clear();
 
-    //sync lastupdated snapshot
-    _syncUserLastUpdatedAt();
+      //sync lastupdated snapshot
+      _syncUserLastUpdatedAt();
+    } catch (e) {
+      //
+    }
   }
 
   _listenToLatestConversation() {
@@ -121,5 +135,42 @@ class ChatConversationViewModel extends BaseViewModel {
 
   void onBack() {
     _navigationService.back();
+  }
+
+  Future<void> onPickImage(ctx) async {
+    try {
+      XFile? pickedPhoto = await AppDialogUtils.pickFromGallery();
+      _handlePhotoSendWithCaption(ctx, pickedPhoto);
+    } catch (e) {
+      //
+    }
+  }
+
+  Future<void> onCaptureFromCamera(ctx) async {
+    try {
+      XFile? capturedPhoto = await AppDialogUtils.captureFromCamera();
+      _handlePhotoSendWithCaption(ctx, capturedPhoto);
+    } catch (e) {
+      //
+    }
+  }
+
+  _handlePhotoSendWithCaption(ctx, XFile? file) async {
+    if (file == null) return;
+    Map<String, dynamic>? resDataConfirm =
+        await AppDialogUtils.showBottomModalSheet(
+            minHeight: .9,
+            maxHeight: .95,
+            initHeight: .9,
+            child: ChatFileUploadPreview(file: file),
+            context: ctx);
+    if (resDataConfirm?["status"] == "send") {
+      //handle send image
+      String? uploadedUrl = await _chatService.uploadImage(file);
+      if (uploadedUrl != null && uploadedUrl.isNotEmpty) {
+        String? caption = resDataConfirm?["caption"];
+        onSendChatMessage(caption: caption, attachmentUrl: uploadedUrl);
+      }
+    }
   }
 }

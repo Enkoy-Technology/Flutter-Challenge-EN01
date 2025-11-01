@@ -34,110 +34,120 @@ class ChatConversationView extends StackedView<ChatConversationViewModel> {
   ) {
     return Scaffold(
         backgroundColor: kcBackground(context).withOpacity(0.95),
-        bottomNavigationBar: SingleChildScrollView(
-          child: Container(
-            color: kcWhite,
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Divider(
-                  height: 0,
-                  thickness: .5,
-                ),
-                kdSpace.height,
-                Padding(
+        bottomNavigationBar: SafeArea(
+          child: SingleChildScrollView(
+            child: Container(
+              color: kcWhite,
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Divider(height: 0, thickness: .5),
+                  kdSpace.height,
+                  Padding(
                     padding: const EdgeInsets.symmetric(horizontal: kdPadding),
                     child: Row(
                       children: [
+                        // Emoticon / add circle
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: kcXVeryLightGreyish(context)),
+                          child: const Icon(kiEmoji,
+                              size: kfIconNormal, color: kcGrey),
+                        ),
+                        kdSpace.width,
+
+                        // Text input area
                         Expanded(
-                          child: SizedBox(
-                            height: 50,
-                            child: TextField(
-                              controller: viewModel.chatTextInputController,
-                              onChanged: viewModel.onChatTextTyping,
-                              decoration: InputDecoration(
-                                hintText: "Type here...",
-                                prefixIconConstraints: const BoxConstraints(
-                                    maxHeight: 35, maxWidth: 35),
-                                prefixIcon: Container(
-                                  padding: const EdgeInsets.only(left: 5),
-                                  margin: const EdgeInsets.only(right: 5),
-                                  child: CircleAvatar(
-                                      backgroundColor: kcPrimary(context),
-                                      radius: 25,
-                                      child: Icon(kiAdd,
-                                          size: kfIconNormal,
-                                          color: kcOnPrimary(context))),
-                                ),
-                                border: const UnderlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(20),
-                                  ),
-                                  borderSide:
-                                      BorderSide(width: 1, color: kcLightGrey),
-                                ),
-                                enabledBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
+                          flex: 65,
+                          child: Container(
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: kcWhite,
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(color: kcLightGrey),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    controller:
+                                        viewModel.chatTextInputController,
+                                    focusNode: viewModel.chatTextFieldFocusNode,
+                                    onChanged: viewModel.onChatTextTyping,
+                                    decoration: const InputDecoration(
+                                      hintText: 'Message...',
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: kdPadding, vertical: 12),
                                     ),
-                                    borderSide: BorderSide(
-                                        width: 1, color: kcLightGrey)),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(20),
                                   ),
-                                  borderSide:
-                                      BorderSide(width: 1, color: kcLightGrey),
                                 ),
-                              ),
+                                // Microphone icon inside input
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Visibility(
+                                    visible: viewModel
+                                        .chatTextInputController.text.isEmpty,
+                                    replacement: IconButton(
+                                      onPressed: viewModel.onSendChatMessage,
+                                      icon: Icon(kiSend,
+                                          color: kcPrimary(context)),
+                                      splashRadius: 20,
+                                    ),
+                                    child: IconButton(
+                                      onPressed: () {},
+                                      icon: const Icon(kiMic, color: kcGrey),
+                                      splashRadius: 20,
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
                           ),
                         ),
-                        kdSpaceLarge.width,
-                        Visibility(
-                          visible:
-                              viewModel.chatTextInputController.text.isNotEmpty,
-                          replacement: AnimatedContainer(
-                              duration: const Duration(milliseconds: 500),
-                              decoration: BoxDecoration(
-                                  color: kcPrimary(context),
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: kdPaddingLarge,
-                                    vertical: kdPaddingSmall),
-                                child: Text(
-                                  "GIF",
-                                  style: kfBodyMedium(context,
-                                      color: kcOnPrimary(context)),
-                                ),
-                              )),
-                          child: InkWell(
-                            onTap: viewModel.onSendChatMessage,
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 500),
-                              decoration: BoxDecoration(
-                                  color: kcPrimary(context),
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: kdPaddingLarge,
-                                    vertical: kdPaddingSmall),
-                                child: Icon(
-                                  kiSend,
-                                  color: kcOnPrimary(context),
-                                  size: kfIconLarge,
-                                ),
+
+                        Expanded(
+                          flex: 30,
+                          child: Row(
+                            children: [
+                              kdSpace.width,
+                              // Camera and gallery icons
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  InkWell(
+                                    onTap: () =>
+                                        viewModel.onCaptureFromCamera(context),
+                                    child: Icon(kiCamera,
+                                        color: kcLightGreyish(context)),
+                                  ),
+                                  kdSpace.width,
+                                  InkWell(
+                                    onTap: () => viewModel.onPickImage(context),
+                                    child: Icon(kiPhotoAlbum,
+                                        color: kcLightGreyish(context)),
+                                  ),
+                                  kdSpace.width,
+                                  InkWell(
+                                    onTap: () {},
+                                    child: Icon(kiAdd,
+                                        color: kcLightGreyish(context)),
+                                  ),
+                                ],
                               ),
-                            ),
+                            ],
                           ),
-                        ),
+                        )
                       ],
-                    )),
-              ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
