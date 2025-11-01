@@ -1,3 +1,11 @@
+import 'package:flutter_chat_app/features/auth/data/datasources/auth_remote_source.dart';
+import 'package:flutter_chat_app/features/auth/data/repositories/auth_repository.dart';
+import 'package:flutter_chat_app/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:flutter_chat_app/features/auth/domain/usecases/login_usecase.dart';
+import 'package:flutter_chat_app/features/auth/domain/usecases/register_usecase.dart';
+import 'package:flutter_chat_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_chat_app/features/auth/presentation/bloc/cubit/login_cubit.dart';
+import 'package:flutter_chat_app/features/auth/presentation/bloc/cubit/register_cubit.dart';
 import 'package:get_it/get_it.dart';
 import '../services/firebase_auth_service.dart';
 import '../services/firestore_service.dart';
@@ -10,4 +18,21 @@ Future<void> setupInjector() async {
   sl.registerLazySingleton(() => FirebaseAuthService());
   sl.registerLazySingleton(() => FirestoreService());
   sl.registerLazySingleton(() => FirebaseStorageService());
+
+  // Remote Source
+  sl.registerLazySingleton(() => AuthRemoteSource());
+
+  // Repository
+  sl.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(remoteSource: sl()),
+  );
+
+  // UseCases
+  sl.registerLazySingleton(() => LoginUseCase(sl()));
+  sl.registerLazySingleton(() => RegisterUseCase(sl()));
+
+  // Cubits & Blocs
+  sl.registerFactory(() => LoginCubit(sl()));
+  sl.registerFactory(() => RegisterCubit(sl()));
+  sl.registerLazySingleton(() => AuthBloc(sl()));
 }

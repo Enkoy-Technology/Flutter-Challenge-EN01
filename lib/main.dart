@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'core/config/app_router.dart';
 import 'core/config/theme.dart';
 import 'core/di/injector.dart';
 import 'firebase_options.dart';
+import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/auth/presentation/bloc/cubit/login_cubit.dart';
+import 'features/auth/presentation/bloc/cubit/register_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,12 +22,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Chat App',
-      theme: AppTheme.lightTheme,
-      onGenerateRoute: AppRouter.onGenerateRoute,
-      initialRoute: AppRouter.login,
-      debugShowCheckedModeBanner: false,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthBloc>(create: (_) => sl<AuthBloc>()),
+        BlocProvider<LoginCubit>(create: (_) => sl<LoginCubit>()),
+        BlocProvider<RegisterCubit>(create: (_) => sl<RegisterCubit>()),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Chat App',
+        theme: AppTheme.lightTheme,
+        onGenerateRoute: AppRouter.onGenerateRoute,
+        initialRoute: AppRouter.login,
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }
