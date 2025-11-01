@@ -22,20 +22,12 @@ class ChatListScreen extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             } else if (state is ChatListLoaded) {
               final users = state.users;
-              return ListView.builder(
+              return ListView.separated(
                 itemCount: users.length,
+                separatorBuilder: (_, __) => const Divider(height: 1),
                 itemBuilder: (context, index) {
                   final user = users[index];
-                  return ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: user.avatarUrl != null
-                          ? NetworkImage(user.avatarUrl!)
-                          : null,
-                      child: user.avatarUrl == null
-                          ? const Icon(Icons.person)
-                          : null,
-                    ),
-                    title: Text(user.name),
+                  return InkWell(
                     onTap: () {
                       Navigator.pushNamed(
                         context,
@@ -46,6 +38,60 @@ class ChatListScreen extends StatelessWidget {
                         },
                       );
                     },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 16,
+                      ),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 28,
+                            backgroundImage: user.avatarUrl != null
+                                ? NetworkImage(user.avatarUrl!)
+                                : null,
+                            child: user.avatarUrl == null
+                                ? const Icon(Icons.person, size: 28)
+                                : null,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  user.name,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  user.lastMessage ?? 'No messages yet',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[600],
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            user.lastMessageTime != null
+                                ? formatTimestamp(user.lastMessageTime!)
+                                : '',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[500],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   );
                 },
               );
@@ -57,5 +103,16 @@ class ChatListScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String formatTimestamp(DateTime time) {
+    final now = DateTime.now();
+    if (now.difference(time).inDays == 0) {
+      return "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
+    } else if (now.difference(time).inDays == 1) {
+      return "Yesterday";
+    } else {
+      return "${time.day}/${time.month}/${time.year}";
+    }
   }
 }

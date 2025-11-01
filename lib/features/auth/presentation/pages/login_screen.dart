@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
-            Navigator.pushReplacementNamed(context, AppRouter.chats);
+            Navigator.pushReplacementNamed(context, AppRouter.home);
           } else if (state is LoginFailure) {
             ScaffoldMessenger.of(
               context,

@@ -63,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen>
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthAuthenticated) {
-          Navigator.pushReplacementNamed(context, AppRouter.chats);
+          Navigator.pushReplacementNamed(context, AppRouter.home);
         } else if (state is AuthUnauthenticated) {
           Navigator.pushReplacementNamed(context, AppRouter.login);
         }

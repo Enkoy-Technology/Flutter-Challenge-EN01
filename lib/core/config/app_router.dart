@@ -4,6 +4,7 @@ import '../../features/auth/presentation/pages/register_screen.dart';
 import '../../features/auth/presentation/pages/splash_screen.dart';
 import '../../features/chat/presentation/pages/chat_list_screen.dart';
 import '../../features/chat/presentation/pages/chat_screen.dart';
+import '../../features/chat/presentation/pages/home_screen.dart';
 
 class AppRouter {
   static const login = '/login';
@@ -11,6 +12,7 @@ class AppRouter {
   static const chats = '/chats';
   static const chatScreen = '/chat-screen';
   static const splash = '/splash';
+  static const home = '/home';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -30,6 +32,8 @@ class AppRouter {
             receiverName: args['receiverName'],
           ),
         );
+      case home:
+        return MaterialPageRoute(builder: (_) => const HomeScreen());
       default:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
     }

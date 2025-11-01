@@ -24,7 +24,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: BlocConsumer<RegisterCubit, RegisterState>(
         listener: (context, state) {
           if (state is RegisterSuccess) {
-            Navigator.pushReplacementNamed(context, AppRouter.chats);
+            Navigator.pushReplacementNamed(context, AppRouter.home);
           } else if (state is RegisterFailure) {
             ScaffoldMessenger.of(
               context,
