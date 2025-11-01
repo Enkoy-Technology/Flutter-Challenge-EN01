@@ -40,7 +40,9 @@ Future<void> setupInjector() async {
 
   // Cubits & Blocs
   sl.registerFactory(() => LoginCubit(sl()));
-  sl.registerFactory(() => RegisterCubit(sl()));
+  sl.registerFactory(
+    () => RegisterCubit(registerUseCase: sl(), loginUseCase: sl()),
+  );
 
   sl.registerLazySingleton(() => AuthBloc(sl()));
 

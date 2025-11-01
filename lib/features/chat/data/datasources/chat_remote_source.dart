@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_chat_app/features/auth/data/models/user_model.dart';
 import 'package:flutter_chat_app/features/chat/data/models/chat_user.dart';
 import '../models/message_model.dart';
 

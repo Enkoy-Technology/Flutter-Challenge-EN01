@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/di/injector.dart';
+import 'package:flutter_chat_app/core/config/app_constants.dart';
+
 import '../bloc/chat_bloc.dart';
 import '../../data/models/message_model.dart';
 import 'package:uuid/uuid.dart';
@@ -21,7 +22,7 @@ class _MessageInputFieldState extends State<MessageInputField> {
 
     final message = MessageModel(
       id: const Uuid().v4(),
-      senderId: 'currentUser', // replace with actual user id
+      senderId: AppConstants.currentUserId,
       receiverId: widget.chatId,
       content: controller.text.trim(),
       timestamp: DateTime.now(),

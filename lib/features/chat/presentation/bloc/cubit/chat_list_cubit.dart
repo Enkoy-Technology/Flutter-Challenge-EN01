@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chat_app/features/chat/data/models/chat_user.dart';
+
 import '../../../domain/repositories/chat_repository.dart';
 
 abstract class ChatListState {}
@@ -19,12 +20,16 @@ class ChatListError extends ChatListState {
 class ChatListCubit extends Cubit<ChatListState> {
   final ChatRepository repository;
   late final Stream<List<ChatUser>> _usersStream;
+
   ChatListCubit({required this.repository}) : super(ChatListLoading());
 
   void loadUsers(String currentUserId) {
     _usersStream = repository.getAllUsers(currentUserId);
+
     _usersStream.listen(
       (users) {
+        // Sort by last message timestamp (optional)
+        users.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
         emit(ChatListLoaded(users));
       },
       onError: (e) {
