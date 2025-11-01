@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_chat_app/core/config/app_constants.dart';
 import '../../../../core/config/app_router.dart';
 import '../../../../core/di/injector.dart';
 import '../bloc/cubit/chat_list_cubit.dart';
@@ -9,11 +11,8 @@ class ChatListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentUserId =
-        'currentUserId'; // replace with real user id from AuthBloc
-
     return BlocProvider(
-      create: (_) => sl<ChatListCubit>()..loadUsers(currentUserId),
+      create: (_) => sl<ChatListCubit>()..loadUsers(AppConstants.currentUserId),
       child: Scaffold(
         appBar: AppBar(title: const Text("Chats")),
         body: BlocBuilder<ChatListCubit, ChatListState>(
@@ -21,7 +20,15 @@ class ChatListScreen extends StatelessWidget {
             if (state is ChatListLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is ChatListLoaded) {
-              final users = state.users;
+              // Exclude current user
+              final users = state.users
+                  .where((user) => user.id != AppConstants.currentUserId)
+                  .toList();
+
+              if (users.isEmpty) {
+                return const Center(child: Text("No chats available."));
+              }
+
               return ListView.separated(
                 itemCount: users.length,
                 separatorBuilder: (_, __) => const Divider(height: 1),
