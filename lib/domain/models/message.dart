@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum MessageType { text, image, video }
@@ -13,6 +12,7 @@ class Message {
   final String? mediaUrl;
   final bool isSent;
   final bool isDelivered;
+  final bool isSeen;
 
   Message({
     required this.messageId,
@@ -24,6 +24,7 @@ class Message {
     this.mediaUrl,
     this.isSent = false,
     this.isDelivered = false,
+    this.isSeen = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -37,6 +38,7 @@ class Message {
       'mediaUrl': mediaUrl,
       'isSent': isSent,
       'isDelivered': isDelivered,
+      'isSeen': isSeen,
     };
   }
 
@@ -51,6 +53,7 @@ class Message {
       mediaUrl: map['mediaUrl'],
       isSent: map['isSent'] ?? false,
       isDelivered: map['isDelivered'] ?? false,
+      isSeen: map['isSeen'] ?? false,
     );
   }
 

@@ -1,12 +1,10 @@
-
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ChatInput extends StatefulWidget {
   final Function(String) onSend;
-  final Function(XFile) onPickImage;
+  final VoidCallback onTyping;
 
-  const ChatInput({super.key, required this.onSend, required this.onPickImage});
+  const ChatInput({super.key, required this.onSend, required this.onTyping});
 
   @override
   _ChatInputState createState() => _ChatInputState();
@@ -22,35 +20,47 @@ class _ChatInputState extends State<ChatInput> {
     }
   }
 
-  void _handlePickImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      widget.onPickImage(image);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(Icons.image),
-            onPressed: _handlePickImage,
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        boxShadow: [
+          BoxShadow(
+            offset: const Offset(0, -1),
+            blurRadius: 4,
+            color: Colors.black.withOpacity(0.05),
           ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
           Expanded(
             child: TextField(
               controller: _textController,
-              decoration: const InputDecoration(
-                hintText: 'Type a message...',
-                border: InputBorder.none,
+              onChanged: (_) => widget.onTyping(),
+              decoration: InputDecoration(
+                hintText: 'Message...',
+                filled: true,
+                fillColor: Theme.of(context).colorScheme.surfaceVariant,
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 16,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide.none,
+                ),
               ),
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.send),
+            icon: Icon(
+              Icons.send,
+              color: Theme.of(context).colorScheme.primary,
+            ),
             onPressed: _handleSend,
           ),
         ],

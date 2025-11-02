@@ -1,8 +1,7 @@
-
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../domain/models/message.dart';
-import 'profile_avatar.dart';
 
 class MessageBubble extends StatelessWidget {
   final Message message;
@@ -12,55 +11,77 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Row(
       mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
-        if (!isMe)
-          const ProfileAvatar(
-              //imageUrl: message.senderProfileImageUrl, // This needs to be added to the Message model
-              ),
         Flexible(
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
             decoration: BoxDecoration(
-              color: isMe ? Colors.blue : Colors.grey[300],
-              borderRadius: BorderRadius.circular(12),
+              color: isMe ? colorScheme.primary : colorScheme.surfaceVariant,
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: isMe
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start,
               children: [
-                Text(
-                  message.senderName,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: isMe ? Colors.white : Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 4),
                 if (message.type == MessageType.text)
                   Text(
                     message.text,
-                    style: TextStyle(color: isMe ? Colors.white : Colors.black),
+                    style: TextStyle(
+                      color: isMe
+                          ? colorScheme.onPrimary
+                          : colorScheme.onSurfaceVariant,
+                    ),
                   ),
-                if (message.type == MessageType.image && message.mediaUrl != null)
-                  Image.network(message.mediaUrl!),
-                if (message.type == MessageType.video && message.mediaUrl != null)
-                  // Implement video player here
+                if (message.type == MessageType.video &&
+                    message.mediaUrl != null)
                   Text(
                     'Video: ${message.mediaUrl}',
-                    style: TextStyle(color: isMe ? Colors.white : Colors.black),
+                    style: TextStyle(
+                      color: isMe
+                          ? colorScheme.onPrimary
+                          : colorScheme.onSurfaceVariant,
+                    ),
                   ),
+                const SizedBox(height: 4),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      DateFormat('h:mm a').format(message.timestamp.toDate()),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color:
+                            (isMe
+                                    ? colorScheme.onPrimary
+                                    : colorScheme.onSurfaceVariant)
+                                .withOpacity(0.7),
+                      ),
+                    ),
+                    if (isMe) ...[
+                      const SizedBox(width: 4),
+                      Icon(
+                        message.isSeen ? Icons.done_all : Icons.done,
+                        size: 14,
+                        color: message.isSeen
+                            ? colorScheme.onPrimary
+                            : (isMe
+                                      ? colorScheme.onPrimary
+                                      : colorScheme.onSurfaceVariant)
+                                  .withOpacity(0.7),
+                      ),
+                    ],
+                  ],
+                ),
               ],
             ),
           ),
         ),
-        if (isMe)
-          Icon(
-            message.isDelivered ? Icons.done_all : Icons.done,
-            color: Colors.grey,
-            size: 16,
-          ),
       ],
     );
   }

@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AppUser {
@@ -13,6 +12,15 @@ class AppUser {
     required this.email,
     required this.profileImageUrl,
   });
+
+  String get initials {
+    if (fullName.isEmpty) return '';
+    final names = fullName.split(' ');
+    if (names.length > 1 && names.last.isNotEmpty) {
+      return names.first[0].toUpperCase() + names.last[0].toUpperCase();
+    }
+    return names.first[0].toUpperCase();
+  }
 
   Map<String, dynamic> toJson() {
     return {
