@@ -12,7 +12,7 @@ class SettingsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
-        backgroundColor: AppColors.primaryBlue,
+        backgroundColor: AppColors.primaryGradientStart,
         foregroundColor: AppColors.white,
       ),
       body: ListView(

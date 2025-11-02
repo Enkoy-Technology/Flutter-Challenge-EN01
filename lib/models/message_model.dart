@@ -8,7 +8,7 @@ class Message {
   final String? senderId;
   final String? recipientId;
   final String? status;
-
+  final String? mediaUrl;
   Message({
     required this.id,
     required this.sender,
@@ -17,6 +17,7 @@ class Message {
     this.senderId,
     this.recipientId,
     this.status,
+    this.mediaUrl,
   });
 
   factory Message.fromMap(Map<String, dynamic> map, String id) {
@@ -28,6 +29,7 @@ class Message {
       senderId: map['senderId'] as String?,
       recipientId: map['recipientId'] as String?,
       status: map['status'] as String? ?? 'sent',
+      mediaUrl: map['mediaUrl'] as String?,
     );
   }
 
@@ -39,6 +41,7 @@ class Message {
       'senderId': senderId,
       'recipientId': recipientId,
       'status': status ?? 'sent',
+      'mediaUrl': mediaUrl,
     };
   }
 }

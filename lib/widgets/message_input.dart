@@ -4,11 +4,16 @@ import '../providers/chat_service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/fcm_notification_service.dart';
 import '../theme/app_colors.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 
 class MessageInput extends ConsumerStatefulWidget {
   final String chatId;
   final String currentUserId;
   final String currentUserName;
+  
 
   const MessageInput({
     super.key,
@@ -42,9 +47,44 @@ class _MessageInputState extends ConsumerState<MessageInput> {
     super.dispose();
   }
 
+  final ImagePicker _picker = ImagePicker();
+  File? _selectedMedia;
+
+
+  Future<void> _pickMedia(ImageSource source) async {
+    try {
+      final pickedFile = await _picker.pickImage(source: source);
+      if (pickedFile == null) return;
+
+      setState(() {
+        _selectedMedia = File(pickedFile.path);
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to pick media: $e')),
+      );
+    }
+  }
+
+
+
   Future<void> submit() async {
     final text = controller.text.trim();
-    if (text.isEmpty) return;
+
+    if (text.isEmpty && _selectedMedia == null) return;
+
+    String? mediaUrl;
+
+    if (_selectedMedia != null) {
+      // Upload media
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('chat_media')
+          .child('${DateTime.now().millisecondsSinceEpoch}');
+      await storageRef.putFile(_selectedMedia!);
+      mediaUrl = await storageRef.getDownloadURL();
+    }
+
     try {
       final chatService = ref.read(chatServiceProvider);
       final chatRef =
@@ -53,27 +93,32 @@ class _MessageInputState extends ConsumerState<MessageInput> {
       final participants = (chatSnap['participants'] as List).cast<String>();
       final recipientId =
           participants.firstWhere((id) => id != widget.currentUserId);
+
       await chatService.sendChatMessage(
         widget.chatId,
         widget.currentUserId,
         widget.currentUserName,
         text,
         recipientId,
+        mediaUrl: mediaUrl,
       );
+
       controller.clear();
+      setState(() {
+        _selectedMedia = null;
+      });
 
       final recipientDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(recipientId)
           .get();
       final fcmToken = recipientDoc['fcmToken'];
-
-      if (fcmToken != null && fcmToken != "") {
+      if (fcmToken != null && fcmToken != '') {
         final fcmService = FcmNotificationService();
         await fcmService.sendNotification(
           fcmToken: fcmToken,
           title: 'New message from ${widget.currentUserName}',
-          body: text,
+          body: text.isEmpty ? 'Sent a media file' : text,
           chatId: widget.chatId,
           chatName: widget.currentUserName,
           senderId: widget.currentUserId,
@@ -85,6 +130,7 @@ class _MessageInputState extends ConsumerState<MessageInput> {
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +152,38 @@ class _MessageInputState extends ConsumerState<MessageInput> {
                   setState(() => showActions = !showActions);
                 },
               ),
+              if (_selectedMedia != null)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.file(
+                          _selectedMedia!,
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        top: -6,
+                        right: -6,
+                        child: IconButton(
+                          icon: const Icon(Icons.cancel,
+                              color: Colors.red, size: 20),
+                          onPressed: () {
+                            setState(() {
+                              _selectedMedia = null;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -169,13 +247,14 @@ class _MessageInputState extends ConsumerState<MessageInput> {
                   IconButton(
                     icon: const Icon(Icons.camera_alt_outlined,
                         color: AppColors.greyTextDark),
-                    onPressed: () {},
+                    onPressed: () => _pickMedia(ImageSource.camera),
                   ),
                   IconButton(
                     icon: const Icon(Icons.image_outlined,
                         color: AppColors.greyTextDark),
-                    onPressed: () {},
+                    onPressed: () => _pickMedia(ImageSource.gallery),
                   ),
+
                   IconButton(
                     icon:
                         const Icon(Icons.add_circle, color: Color(0xFF2196F3)),

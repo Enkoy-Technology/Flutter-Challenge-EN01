@@ -51,13 +51,15 @@ class ChatService implements IChatService {
   }
 
   Future<void> sendChatMessage(String chatId, String senderId,
-      String senderName, String text, String recipientId) async {
+      String senderName, String text, String recipientId,
+      {String? mediaUrl}) async {
     await _collection.add({
       'chatId': chatId,
       'senderId': senderId,
       'sender': senderName,
       'recipientId': recipientId,
       'text': text,
+      'mediaUrl': mediaUrl ?? '',
       'timestamp': FieldValue.serverTimestamp(),
       'status': 'sent',
     });

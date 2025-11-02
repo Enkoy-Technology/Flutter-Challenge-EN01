@@ -35,7 +35,8 @@ class ChatBubble extends StatelessWidget {
                 children: [
                   Text(
                     message.text,
-                    style: const TextStyle(color: AppColors.white, fontSize: 15),
+                    style:
+                        const TextStyle(color: AppColors.white, fontSize: 15),
                   ),
                   const SizedBox(height: 4),
                   Row(
@@ -106,17 +107,35 @@ class ChatBubble extends StatelessWidget {
                 ],
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: [
-                
-                  Text(
-                    message.text,
-                    style: const TextStyle(color: AppColors.black87, fontSize: 15),
-                  ),
+                  if (message.mediaUrl != null && message.mediaUrl!.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          message.mediaUrl!,
+                          width: 200,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  if (message.text.isNotEmpty)
+                    Text(
+                      message.text,
+                      style: TextStyle(
+                        color: isMe ? AppColors.white : AppColors.black87,
+                        fontSize: 15,
+                      ),
+                    ),
                   const SizedBox(height: 4),
                   Text(
                     dt.toLowerCase(),
-                    style: const TextStyle(fontSize: 11, color: AppColors.greyText),
+                    style: const TextStyle(
+                        fontSize: 11, color: AppColors.greyText),
                   ),
                 ],
               ),
