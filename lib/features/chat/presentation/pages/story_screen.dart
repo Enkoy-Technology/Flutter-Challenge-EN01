@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/features/chat/presentation/pages/call_screen.dart';
+import 'package:flutter_chat_app/core/config/app_constants.dart';
 import 'package:flutter_chat_app/features/chat/presentation/widgets/modern_header.dart';
 
 class StoryScreen extends StatelessWidget {
@@ -9,13 +9,6 @@ class StoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-
-    final stories = [
-      {'name': 'You', 'isSeen': false},
-      {'name': 'Sarah', 'isSeen': true},
-      {'name': 'Mike', 'isSeen': false},
-      {'name': 'Olivia', 'isSeen': true},
-    ];
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -30,14 +23,14 @@ class StoryScreen extends StatelessWidget {
             Expanded(
               child: GridView.builder(
                 padding: const EdgeInsets.all(16),
-                itemCount: stories.length,
+                itemCount: AppConstants.stories.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
                 ),
                 itemBuilder: (context, index) {
-                  final story = stories[index];
+                  final story = AppConstants.stories[index];
                   return Column(
                     children: [
                       CircleAvatar(

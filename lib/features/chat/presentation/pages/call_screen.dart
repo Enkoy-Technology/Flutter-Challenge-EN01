@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/core/config/app_constants.dart';
 import 'package:flutter_chat_app/features/chat/presentation/widgets/modern_header.dart';
 
 class CallScreen extends StatelessWidget {
@@ -8,12 +9,6 @@ class CallScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-
-    final List<Map<String, String>> recentCalls = [
-      {'name': 'John Doe', 'time': 'Yesterday, 9:30 PM'},
-      {'name': 'Alice', 'time': 'Today, 11:45 AM'},
-      {'name': 'Michael', 'time': 'Monday, 5:10 PM'},
-    ];
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -27,9 +22,9 @@ class CallScreen extends StatelessWidget {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: recentCalls.length,
+                itemCount: AppConstants.calls.length,
                 itemBuilder: (context, index) {
-                  final call = recentCalls[index];
+                  final call = AppConstants.calls[index];
                   return ListTile(
                     leading: CircleAvatar(
                       backgroundColor: colorScheme.primary.withOpacity(0.1),

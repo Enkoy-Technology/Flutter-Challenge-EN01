@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/features/chat/presentation/pages/call_screen.dart';
+import 'package:flutter_chat_app/core/config/app_constants.dart';
 import 'package:flutter_chat_app/features/chat/presentation/widgets/modern_header.dart';
 
 class ContactsScreen extends StatelessWidget {
@@ -9,13 +9,6 @@ class ContactsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-
-    final contacts = [
-      {'name': 'John Doe', 'status': 'Hey there! I am using ChatApp'},
-      {'name': 'Alice', 'status': 'Busy'},
-      {'name': 'Michael', 'status': 'At work'},
-      {'name': 'Sarah', 'status': 'Available'},
-    ];
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -29,9 +22,9 @@ class ContactsScreen extends StatelessWidget {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: contacts.length,
+                itemCount: AppConstants.contacts.length,
                 itemBuilder: (context, index) {
-                  final contact = contacts[index];
+                  final contact = AppConstants.contacts[index];
                   return ListTile(
                     leading: CircleAvatar(
                       backgroundColor: colorScheme.primary.withOpacity(0.1),
