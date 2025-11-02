@@ -218,46 +218,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final preferencesService = Provider.of<PreferencesService>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Profile & Settings"),
-        centerTitle: true,
-      ),
+      backgroundColor: Colors.grey.shade50,
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-              onRefresh: _fetchUserData,
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // Profile Section
-                    _buildProfileSection(context),
-                    const SizedBox(height: 24),
+          : SafeArea(
+              child: RefreshIndicator(
+                onRefresh: _fetchUserData,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Modern Header
+                      _ModernProfileHeader(),
+                      const SizedBox(height: 16),
 
-                    // Account Settings
-                    _buildSectionTitle('Account Settings'),
-                    const SizedBox(height: 12),
-                    _buildAccountSettings(context),
-                    const SizedBox(height: 24),
+                      // Profile Section
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: _buildProfileSection(context),
+                      ),
+                      const SizedBox(height: 24),
 
-                    // App Settings
-                    _buildSectionTitle('App Settings'),
-                    const SizedBox(height: 12),
-                    _buildAppSettings(context, themeService, preferencesService),
-                    const SizedBox(height: 24),
+                      // Account Settings
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: _buildAccountSettings(context),
+                      ),
+                      const SizedBox(height: 20),
 
-                    // Notification Settings
-                    _buildSectionTitle('Notifications'),
-                    const SizedBox(height: 12),
-                    _buildNotificationSettings(context, preferencesService),
-                    const SizedBox(height: 32),
+                      // App Settings
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: _buildAppSettings(context, themeService, preferencesService),
+                      ),
+                      const SizedBox(height: 20),
 
-                    // Logout Button
-                    _buildLogoutButton(context),
-                    const SizedBox(height: 16),
-                  ],
+                      // Notification Settings
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: _buildNotificationSettings(context, preferencesService),
+                      ),
+                      const SizedBox(height: 32),
+
+                      // Logout Button
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: _buildLogoutButton(context),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -265,63 +276,142 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildProfileSection(BuildContext context) {
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.blue.shade600,
+            Colors.blue.shade400,
+            Colors.purple.shade400,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
         child: Column(
           children: [
             Stack(
               children: [
-                CircleAvatar(
-                  radius: 60,
-                  backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-                  backgroundImage: userModel?.avatarUrl != null
-                      ? NetworkImage(userModel!.avatarUrl!)
-                      : null,
-                  child: userModel?.avatarUrl == null
-                      ? Icon(
-                          Icons.person,
-                          size: 60,
-                          color: Theme.of(context).primaryColor,
-                        )
-                      : null,
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.3),
+                      width: 4,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
+                  ),
+                  child: CircleAvatar(
+                    radius: 64,
+                    backgroundColor: Colors.white.withOpacity(0.2),
+                    backgroundImage: userModel?.avatarUrl != null
+                        ? NetworkImage(userModel!.avatarUrl!)
+                        : null,
+                    child: userModel?.avatarUrl == null
+                        ? Icon(
+                            Icons.person,
+                            size: 64,
+                            color: Colors.white,
+                          )
+                        : null,
+                  ),
                 ),
                 if (isUpdating)
-                  const Positioned.fill(
-                    child: Center(child: CircularProgressIndicator()),
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.black.withOpacity(0.3),
+                      ),
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      ),
+                    ),
                   ),
                 Positioned(
                   bottom: 0,
                   right: 0,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
+                      color: Colors.white,
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
+                      border: Border.all(color: Colors.white, width: 3),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    child: IconButton(
-                      icon: const Icon(Icons.camera_alt, color: Colors.white),
-                      onPressed: isUpdating ? null : _pickImage,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: isUpdating ? null : _pickImage,
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          width: 44,
+                          height: 44,
+                          alignment: Alignment.center,
+                          child: Icon(
+                            Icons.camera_alt,
+                            color: Colors.blue.shade700,
+                            size: 20,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             Text(
               userModel?.name ?? "User Name",
               style: const TextStyle(
-                fontSize: 24,
+                fontSize: 26,
                 fontWeight: FontWeight.bold,
+                color: Colors.white,
+                letterSpacing: 0.5,
               ),
             ),
-            const SizedBox(height: 4),
-            Text(
-              userModel?.email ?? "user@example.com",
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[600],
-              ),
+            const SizedBox(height: 6),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.email,
+                  size: 16,
+                  color: Colors.white.withOpacity(0.9),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  userModel?.email ?? "user@example.com",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white.withOpacity(0.9),
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -330,39 +420,123 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildAccountSettings(BuildContext context) {
-    return Card(
-      child: Column(
-        children: [
-          ListTile(
-            leading: const Icon(Icons.person),
-            title: const Text('Display Name'),
-            subtitle: TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                hintText: 'Enter your name',
-                border: InputBorder.none,
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 12),
+          child: Text(
+            'Account',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade800,
             ),
-            trailing: isUpdating
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : IconButton(
-                    icon: const Icon(Icons.check),
-                    onPressed: _updateName,
+          ),
+        ),
+        Card(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: Colors.grey.shade200, width: 1),
+          ),
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
                   ),
+                ),
+                child: ListTile(
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade100,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      Icons.person,
+                      color: Colors.blue.shade700,
+                      size: 20,
+                    ),
+                  ),
+                  title: const Text(
+                    'Display Name',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15,
+                    ),
+                  ),
+                  subtitle: TextField(
+                    controller: _nameController,
+                    style: const TextStyle(fontSize: 14),
+                    decoration: InputDecoration(
+                      hintText: 'Enter your name',
+                      hintStyle: TextStyle(color: Colors.grey.shade400),
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                  ),
+                  trailing: isUpdating
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Container(
+                          decoration: BoxDecoration(
+                            color: Colors.blue.shade600,
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.check, color: Colors.white, size: 18),
+                            onPressed: _updateName,
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(
+                              minWidth: 36,
+                              minHeight: 36,
+                            ),
+                          ),
+                        ),
+                ),
+              ),
+              Divider(height: 1, color: Colors.grey.shade200),
+              ListTile(
+                leading: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    Icons.email,
+                    color: Colors.grey.shade700,
+                    size: 20,
+                  ),
+                ),
+                title: const Text(
+                  'Email',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                  ),
+                ),
+                subtitle: Text(
+                  userModel?.email ?? '',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                enabled: false,
+              ),
+            ],
           ),
-          const Divider(height: 1),
-          ListTile(
-            leading: const Icon(Icons.email),
-            title: const Text('Email'),
-            subtitle: Text(userModel?.email ?? ''),
-            enabled: false,
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -371,18 +545,82 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ThemeService themeService,
     PreferencesService preferencesService,
   ) {
-    return Card(
-      child: Column(
-        children: [
-          SwitchListTile(
-            secondary: const Icon(Icons.dark_mode),
-            title: const Text('Dark Mode'),
-            subtitle: const Text('Toggle dark theme'),
-            value: themeService.isDarkMode,
-            onChanged: (value) => themeService.toggleTheme(),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 12),
+          child: Text(
+            'App Settings',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade800,
+            ),
           ),
-        ],
-      ),
+        ),
+        Card(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: Colors.grey.shade200, width: 1),
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: themeService.isDarkMode
+                  ? LinearGradient(
+                      colors: [
+                        Colors.grey.shade800,
+                        Colors.grey.shade700,
+                      ],
+                    )
+                  : null,
+              color: themeService.isDarkMode ? null : Colors.white,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: SwitchListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+              secondary: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: themeService.isDarkMode
+                      ? Colors.amber.shade100.withOpacity(0.2)
+                      : Colors.amber.shade100,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  themeService.isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                  color: themeService.isDarkMode
+                      ? Colors.amber.shade300
+                      : Colors.amber.shade700,
+                  size: 20,
+                ),
+              ),
+              title: const Text(
+                'Dark Mode',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                ),
+              ),
+              subtitle: Text(
+                themeService.isDarkMode
+                    ? 'Dark theme is enabled'
+                    : 'Light theme is enabled',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+              value: themeService.isDarkMode,
+              onChanged: (value) => themeService.toggleTheme(),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -390,66 +628,244 @@ class _ProfileScreenState extends State<ProfileScreen> {
     BuildContext context,
     PreferencesService preferencesService,
   ) {
-    return Card(
-      child: Column(
-        children: [
-          SwitchListTile(
-            secondary: const Icon(Icons.notifications),
-            title: const Text('Enable Notifications'),
-            subtitle: const Text('Receive push notifications'),
-            value: preferencesService.notificationsEnabled,
-            onChanged: (value) =>
-                preferencesService.setNotificationsEnabled(value),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 12),
+          child: Text(
+            'Notifications',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade800,
+            ),
           ),
-          const Divider(height: 1),
-          SwitchListTile(
-            secondary: const Icon(Icons.volume_up),
-            title: const Text('Sound'),
-            subtitle: const Text('Play sound for notifications'),
-            value: preferencesService.soundEnabled,
-            onChanged: preferencesService.notificationsEnabled
-                ? (value) => preferencesService.setSoundEnabled(value)
-                : null,
+        ),
+        Card(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: Colors.grey.shade200, width: 1),
           ),
-          const Divider(height: 1),
-          SwitchListTile(
-            secondary: const Icon(Icons.vibration),
-            title: const Text('Vibration'),
-            subtitle: const Text('Vibrate for notifications'),
-            value: preferencesService.vibrationEnabled,
-            onChanged: preferencesService.notificationsEnabled
-                ? (value) => preferencesService.setVibrationEnabled(value)
-                : null,
+          child: Column(
+            children: [
+              SwitchListTile(
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                secondary: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade100,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    Icons.notifications,
+                    color: Colors.red.shade700,
+                    size: 20,
+                  ),
+                ),
+                title: const Text(
+                  'Enable Notifications',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                  ),
+                ),
+                subtitle: Text(
+                  'Receive push notifications',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                value: preferencesService.notificationsEnabled,
+                onChanged: (value) =>
+                    preferencesService.setNotificationsEnabled(value),
+              ),
+              Divider(height: 1, color: Colors.grey.shade200),
+              SwitchListTile(
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                secondary: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: preferencesService.notificationsEnabled
+                        ? Colors.green.shade100
+                        : Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    Icons.volume_up,
+                    color: preferencesService.notificationsEnabled
+                        ? Colors.green.shade700
+                        : Colors.grey.shade400,
+                    size: 20,
+                  ),
+                ),
+                title: const Text(
+                  'Sound',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                  ),
+                ),
+                subtitle: Text(
+                  'Play sound for notifications',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                value: preferencesService.soundEnabled,
+                onChanged: preferencesService.notificationsEnabled
+                    ? (value) => preferencesService.setSoundEnabled(value)
+                    : null,
+              ),
+              Divider(height: 1, color: Colors.grey.shade200),
+              SwitchListTile(
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                secondary: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: preferencesService.notificationsEnabled
+                        ? Colors.orange.shade100
+                        : Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    Icons.vibration,
+                    color: preferencesService.notificationsEnabled
+                        ? Colors.orange.shade700
+                        : Colors.grey.shade400,
+                    size: 20,
+                  ),
+                ),
+                title: const Text(
+                  'Vibration',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                  ),
+                ),
+                subtitle: Text(
+                  'Vibrate for notifications',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                value: preferencesService.vibrationEnabled,
+                onChanged: preferencesService.notificationsEnabled
+                    ? (value) => preferencesService.setVibrationEnabled(value)
+                    : null,
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _buildLogoutButton(BuildContext context) {
-    return Card(
-      color: Colors.red.shade50,
-      child: ListTile(
-        leading: const Icon(Icons.logout, color: Colors.red),
-        title: const Text(
-          'Logout',
-          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Colors.red.shade600,
+            Colors.red.shade500,
+          ],
         ),
-        onTap: _logout,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.red.withOpacity(0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: _logout,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.logout, color: Colors.white, size: 22),
+                const SizedBox(width: 12),
+                const Text(
+                  'Logout',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 }
+
+class _ModernProfileHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Profile & Settings',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade900,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Manage your account',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
