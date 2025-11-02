@@ -88,14 +88,31 @@ class _UserListItem extends StatelessWidget {
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
-        leading: CircleAvatar(
-          radius: 24,
-          backgroundImage: user.avatarUrl != null
-              ? NetworkImage(user.avatarUrl!)
-              : null,
-          child: user.avatarUrl == null
-              ? const Icon(Icons.person, size: 24)
-              : null,
+        leading: Stack(
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundImage: user.avatarUrl != null
+                  ? NetworkImage(user.avatarUrl!)
+                  : null,
+              child: user.avatarUrl == null
+                  ? const Icon(Icons.person, size: 24)
+                  : null,
+            ),
+            if (user.isOnline ?? false)
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  width: 10,
+                  height: 10,
+                  decoration: const BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+          ],
         ),
         title: Text(
           user.name,
@@ -104,7 +121,13 @@ class _UserListItem extends StatelessWidget {
         subtitle: user.lastMessage != null
             ? Text(
                 user.lastMessage!,
-                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                  fontWeight: user.unreadCount > 0
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               )
@@ -112,16 +135,34 @@ class _UserListItem extends StatelessWidget {
                 "Start a conversation",
                 style: TextStyle(fontSize: 14, color: Colors.grey),
               ),
-        trailing: user.lastMessageTime != null
-            ? Text(
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (user.lastMessageTime != null)
+              Text(
                 _formatTimestamp(user.lastMessageTime!),
                 style: TextStyle(fontSize: 12, color: Colors.grey[500]),
-              )
-            : null,
-        onTap: () {
-          _navigateToChat(context, user);
-        },
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              ),
+            if (user.unreadCount > 0)
+              Container(
+                margin: const EdgeInsets.only(top: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.redAccent,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  user.unreadCount.toString(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+          ],
+        ),
+        onTap: () => _navigateToChat(context, user),
       ),
     );
   }

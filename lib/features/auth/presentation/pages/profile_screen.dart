@@ -79,15 +79,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     child: Column(
                       children: [
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundImage: userModel?.photoUrl != null
-                              ? NetworkImage(userModel!.photoUrl!)
-                              : null,
-                          child: userModel?.photoUrl == null
-                              ? const Icon(Icons.person, size: 50)
-                              : null,
-                        ),
+                        // CircleAvatar(
+                        //   radius: 50,
+                        //   backgroundImage: userModel?.photoUrl != null
+                        //       ? NetworkImage(userModel!.photoUrl!)
+                        //       : null,
+                        //   child: userModel?.photoUrl == null
+                        //       ? const Icon(Icons.person, size: 50)
+                        //       : null,
+                        // ),
                         const SizedBox(height: 16),
                         Text(
                           userModel?.name ?? "User Name",
@@ -106,7 +106,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          userModel?.photoUrl ?? "",
+                          userModel?.name ?? "",
                           style: const TextStyle(
                             fontSize: 16,
                             color: Colors.grey,

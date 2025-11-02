@@ -7,7 +7,9 @@ class ChatUser {
   final String? lastMessage;
   final DateTime? lastMessageTime;
   final String? email;
-  final String? chatId; // Add this field
+  final String? chatId;
+  final bool? isOnline;
+  final int unreadCount;
 
   ChatUser({
     required this.id,
@@ -17,6 +19,8 @@ class ChatUser {
     this.lastMessageTime,
     this.email,
     this.chatId,
+    this.isOnline,
+    this.unreadCount = 0,
   });
 
   factory ChatUser.fromMap(Map<String, dynamic> map, String id) {
@@ -30,27 +34,16 @@ class ChatUser {
           ? (map['lastMessageTime'] as Timestamp).toDate()
           : null,
       chatId: map['chatId'],
+      isOnline: map['isOnline'] ?? false,
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'avatarUrl': avatarUrl,
-      'email': email,
-      'lastMessage': lastMessage,
-      'lastMessageTime': lastMessageTime != null
-          ? Timestamp.fromDate(lastMessageTime!)
-          : null,
-      'chatId': chatId,
-    };
-  }
-
-  // Helper method to copy with new values
   ChatUser copyWith({
     String? lastMessage,
     DateTime? lastMessageTime,
     String? chatId,
+    bool? isOnline,
+    int? unreadCount,
   }) {
     return ChatUser(
       id: id,
@@ -60,6 +53,8 @@ class ChatUser {
       lastMessage: lastMessage ?? this.lastMessage,
       lastMessageTime: lastMessageTime ?? this.lastMessageTime,
       chatId: chatId ?? this.chatId,
+      isOnline: isOnline ?? this.isOnline,
+      unreadCount: unreadCount ?? this.unreadCount,
     );
   }
 }

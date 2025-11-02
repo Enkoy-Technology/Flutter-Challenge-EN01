@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_chat_app/core/config/app_constants.dart';
 import 'package:flutter_chat_app/features/chat/presentation/bloc/chat_bloc.dart';
 import 'package:logging/logging.dart';
 
@@ -22,6 +25,15 @@ void main() async {
     if (record.error != null) {
       print('Error: ${record.error}');
       print('Stack Trace: ${record.stackTrace}');
+    }
+  });
+  FirebaseAuth.instance.authStateChanges().listen((user) {
+    if (user != null) {
+      final uid = user.uid;
+      FirebaseFirestore.instance
+          .collection(AppConstants.usersCollection)
+          .doc(uid)
+          .update({'isOnline': true, 'lastSeen': FieldValue.serverTimestamp()});
     }
   });
 

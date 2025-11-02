@@ -22,9 +22,6 @@ class ChatRepositoryImpl implements ChatRepository {
   Stream<List<ChatUser>> getAllUsersWithRealtimeLastMessage(
     String currentUserId,
   ) {
-    return remoteSource
-        .getAllUsersWithRealtimeLastMessageWithRealtimeLastMessage(
-          currentUserId,
-        );
+    return remoteSource.getAllUsersWithRealtimeLastMessage(currentUserId);
   }
 }

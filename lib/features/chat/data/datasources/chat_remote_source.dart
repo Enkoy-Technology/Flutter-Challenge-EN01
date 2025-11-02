@@ -30,8 +30,7 @@ class ChatRemoteSource {
         .set(message.toMap());
   }
 
-  Stream<List<ChatUser>>
-  getAllUsersWithRealtimeLastMessageWithRealtimeLastMessage(
+  Stream<List<ChatUser>> getAllUsersWithRealtimeLastMessage(
     String currentUserId,
   ) {
     return _firestore.collection('users').snapshots().switchMap((snapshot) {
@@ -44,39 +43,54 @@ class ChatRemoteSource {
         return Stream.value([]);
       }
 
-      // Create a map to track user updates
-      final userMap = <String, ChatUser>{};
-      for (final user in users) {
-        userMap[user.id] = user;
-      }
+      final userMap = <String, ChatUser>{for (var u in users) u.id: u};
 
-      // Create a stream for each user's last message
-      final messageStreams = users.map((user) {
+      final userStreams = users.map((user) {
         final chatId = _generateChatId(currentUserId, user.id);
-        return _firestore
+
+        // Listen for last message and unread count together
+        final lastMessageStream = _firestore
             .collection('chats')
             .doc(chatId)
             .collection('messages')
             .orderBy('timestamp', descending: true)
             .limit(1)
-            .snapshots()
-            .map((snapshot) {
-              final updatedUser = userMap[user.id]!;
-              if (snapshot.docs.isNotEmpty) {
-                final lastMessageData = snapshot.docs.first.data();
-                final lastMessage = MessageModel.fromMap(lastMessageData);
-                return updatedUser.copyWith(
-                  lastMessage: lastMessage.content,
-                  lastMessageTime: lastMessage.timestamp,
-                  chatId: chatId,
-                );
-              }
-              return updatedUser.copyWith(chatId: chatId);
-            });
+            .snapshots();
+
+        final unreadStream = _firestore
+            .collection('chats')
+            .doc(chatId)
+            .collection('messages')
+            .where('receiverId', isEqualTo: currentUserId)
+            .where('isRead', isEqualTo: false)
+            .snapshots();
+
+        return Rx.combineLatest2(lastMessageStream, unreadStream, (
+          QuerySnapshot lastMsgSnap,
+          QuerySnapshot unreadSnap,
+        ) {
+          final updatedUser = userMap[user.id]!;
+
+          if (lastMsgSnap.docs.isNotEmpty) {
+            final lastMessageData =
+                lastMsgSnap.docs.first.data() as Map<String, dynamic>;
+            final lastMessage = MessageModel.fromMap(lastMessageData);
+            return updatedUser.copyWith(
+              lastMessage: lastMessage.content,
+              lastMessageTime: lastMessage.timestamp,
+              chatId: chatId,
+              unreadCount: unreadSnap.docs.length,
+            );
+          }
+
+          return updatedUser.copyWith(
+            chatId: chatId,
+            unreadCount: unreadSnap.docs.length,
+          );
+        });
       });
 
-      // Combine streams manually
-      return _combineStreams(messageStreams.toList());
+      return _combineStreams(userStreams.toList());
     });
   }
 
