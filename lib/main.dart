@@ -7,9 +7,11 @@ import 'package:flutter_chat_app/core/config/app_constants.dart';
 import 'package:flutter_chat_app/features/chat/presentation/bloc/chat_bloc.dart';
 import 'package:logging/logging.dart';
 
+import 'package:provider/provider.dart';
 import 'core/config/app_router.dart';
-import 'core/config/theme.dart';
 import 'core/di/injector.dart';
+import 'core/services/theme_service.dart';
+import 'core/services/preferences_service.dart';
 import 'firebase_options.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/auth/presentation/bloc/cubit/login_cubit.dart';
@@ -45,19 +47,29 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return MultiProvider(
       providers: [
-        BlocProvider<AuthBloc>(create: (_) => sl<AuthBloc>()),
-        BlocProvider<LoginCubit>(create: (_) => sl<LoginCubit>()),
-        BlocProvider<RegisterCubit>(create: (_) => sl<RegisterCubit>()),
-        BlocProvider<ChatBloc>(create: (_) => sl<ChatBloc>()),
+        ChangeNotifierProvider(create: (_) => ThemeService()),
+        ChangeNotifierProvider(create: (_) => PreferencesService()),
       ],
-      child: MaterialApp(
-        title: 'Flutter Chat App',
-        theme: AppTheme.lightTheme,
-        onGenerateRoute: AppRouter.onGenerateRoute,
-        initialRoute: AppRouter.splash,
-        debugShowCheckedModeBanner: false,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<AuthBloc>(create: (_) => sl<AuthBloc>()),
+          BlocProvider<LoginCubit>(create: (_) => sl<LoginCubit>()),
+          BlocProvider<RegisterCubit>(create: (_) => sl<RegisterCubit>()),
+          BlocProvider<ChatBloc>(create: (_) => sl<ChatBloc>()),
+        ],
+        child: Consumer<ThemeService>(
+          builder: (context, themeService, child) {
+            return MaterialApp(
+              title: 'Flutter Chat App',
+              theme: themeService.theme,
+              onGenerateRoute: AppRouter.onGenerateRoute,
+              initialRoute: AppRouter.splash,
+              debugShowCheckedModeBanner: false,
+            );
+          },
+        ),
       ),
     );
   }
