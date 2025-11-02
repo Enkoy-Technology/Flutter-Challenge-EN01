@@ -274,7 +274,7 @@ MIT License - See LICENSE file for details
 ## 👨‍💻 Author
 
 **Your Name**
-- GitHub: [@yourusername](https://github.com/TitusKI)
+- GitHub: [@TitusKI](https://github.com/TitusKI)
 - Email: k.mariambezie@gmail.com
 
 
