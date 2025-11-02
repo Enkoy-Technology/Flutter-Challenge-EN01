@@ -29,7 +29,7 @@ void main() async {
     }
   });
   final presenceService = PresenceService();
-  
+
   // Set up presence tracking when user logs in
   FirebaseAuth.instance.authStateChanges().listen((user) async {
     if (user != null) {
@@ -101,9 +101,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         ],
         child: Consumer<ThemeService>(
           builder: (context, themeService, child) {
+            // Use the theme service theme if initialized, otherwise use light theme
+            final currentTheme = themeService.isInitialized
+                ? themeService.theme
+                : ThemeData.light();
+
             return MaterialApp(
               title: 'Flutter Chat App',
-              theme: themeService.theme,
+              theme: currentTheme,
               onGenerateRoute: AppRouter.onGenerateRoute,
               initialRoute: AppRouter.splash,
               debugShowCheckedModeBanner: false,
