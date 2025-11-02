@@ -14,174 +14,384 @@ class ChatListScreen extends StatelessWidget {
     return BlocProvider(
       create: (_) => sl<ChatListCubit>()..loadUsers(AppConstants.currentUserId),
       child: Scaffold(
-        appBar: AppBar(title: const Text("Chats")),
-        body: BlocBuilder<ChatListCubit, ChatListState>(
-          builder: (context, state) {
-            if (state is ChatListLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is ChatListLoaded) {
-              final users = state.users;
+        backgroundColor: Colors.grey.shade50,
+        body: SafeArea(
+          child: Column(
+            children: [
+              _ModernHeader(),
+              Expanded(
+                child: BlocBuilder<ChatListCubit, ChatListState>(
+                  builder: (context, state) {
+                    if (state is ChatListLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is ChatListLoaded) {
+                      final users = state.users;
 
-              if (users.isEmpty) {
-                return const Center(
-                  child: Text(
-                    "No users found",
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                );
-              }
+                      if (users.isEmpty) {
+                        return _EmptyState();
+                      }
 
-              return ListView.separated(
-                padding: const EdgeInsets.all(16),
-                itemCount: users.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 12),
-                itemBuilder: (context, index) {
-                  final user = users[index];
-
-                  return _UserListItem(user: user);
-                },
-              );
-            } else if (state is ChatListError) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Error loading users",
-                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      state.message,
-                      style: TextStyle(fontSize: 14, color: Colors.grey[500]),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<ChatListCubit>().loadUsers(
-                          AppConstants.currentUserId,
-                        );
-                      },
-                      child: const Text("Retry"),
-                    ),
-                  ],
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          context.read<ChatListCubit>().loadUsers(
+                            AppConstants.currentUserId,
+                          );
+                        },
+                        child: ListView.builder(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          itemCount: users.length,
+                          itemBuilder: (context, index) {
+                            final user = users[index];
+                            return _ModernUserListItem(user: user);
+                          },
+                        ),
+                      );
+                    } else if (state is ChatListError) {
+                      return _ErrorState(
+                        message: state.message,
+                        onRetry: () {
+                          context.read<ChatListCubit>().loadUsers(
+                            AppConstants.currentUserId,
+                          );
+                        },
+                      );
+                    }
+                    return const SizedBox();
+                  },
                 ),
-              );
-            }
-            return const SizedBox();
-          },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _UserListItem extends StatelessWidget {
-  final ChatUser user;
+class _ModernHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Messages',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade900,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Tap to start a conversation',
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.blue.shade50,
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              icon: Icon(Icons.search, color: Colors.blue.shade700),
+              onPressed: () {
+                // TODO: Implement search
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-  const _UserListItem({required this.user});
+class _EmptyState extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.chat_bubble_outline,
+            size: 80,
+            color: Colors.grey.shade400,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'No conversations yet',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey.shade700,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Start chatting with friends',
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ErrorState extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+
+  const _ErrorState({required this.message, required this.onRetry});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: ListTile(
-        leading: Stack(
-          children: [
-            CircleAvatar(
-              radius: 24,
-              backgroundImage: user.avatarUrl != null
-                  ? NetworkImage(user.avatarUrl!)
-                  : null,
-              child: user.avatarUrl == null
-                  ? const Icon(Icons.person, size: 24)
-                  : null,
-            ),
-            if (user.isOnline ?? false)
-              Positioned(
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  width: 10,
-                  height: 10,
-                  decoration: const BoxDecoration(
-                    color: Colors.green,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
-          ],
-        ),
-        title: Text(
-          user.name,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
-        subtitle: user.isTyping
-            ? Row(
-                children: [
-                  SizedBox(
-                    width: 20,
-                    height: 16,
-                    child: _SmallTypingIndicator(),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    'typing...',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.blue[600],
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ],
-              )
-            : user.lastMessage != null
-            ? Text(
-                user.lastMessage!,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                  fontWeight: user.unreadCount > 0
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              )
-            : const Text(
-                "Start a conversation",
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-        trailing: Column(
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (user.lastMessageTime != null)
-              Text(
-                _formatTimestamp(user.lastMessageTime!),
-                style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+            Icon(Icons.error_outline, size: 64, color: Colors.red.shade300),
+            const SizedBox(height: 16),
+            Text(
+              "Error loading users",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade800,
               ),
-            if (user.unreadCount > 0)
-              Container(
-                margin: const EdgeInsets.only(top: 6),
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: Colors.redAccent,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  user.unreadCount.toString(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              message,
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(Icons.refresh),
+              label: const Text("Retry"),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
                 ),
               ),
+            ),
           ],
         ),
-        onTap: () => _navigateToChat(context, user),
+      ),
+    );
+  }
+}
+
+class _ModernUserListItem extends StatelessWidget {
+  final ChatUser user;
+
+  const _ModernUserListItem({required this.user});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _navigateToChat(context, user),
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                // Avatar with online indicator
+                Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: (user.isOnline ?? false)
+                              ? Colors.green.shade400
+                              : Colors.grey.shade300,
+                          width: 2.5,
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        radius: 28,
+                        backgroundColor: Colors.grey.shade200,
+                        backgroundImage: user.avatarUrl != null
+                            ? NetworkImage(user.avatarUrl!)
+                            : null,
+                        child: user.avatarUrl == null
+                            ? Icon(
+                                Icons.person,
+                                size: 28,
+                                color: Colors.grey.shade500,
+                              )
+                            : null,
+                      ),
+                    ),
+                    if (user.isOnline ?? false)
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          width: 14,
+                          height: 14,
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade500,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 2.5),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(width: 16),
+                // Content
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              user.name,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: user.unreadCount > 0
+                                    ? FontWeight.bold
+                                    : FontWeight.w600,
+                                color: Colors.grey.shade900,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          if (user.lastMessageTime != null)
+                            Text(
+                              _formatTimestamp(user.lastMessageTime!),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: user.unreadCount > 0
+                                    ? Colors.blue.shade700
+                                    : Colors.grey.shade500,
+                                fontWeight: user.unreadCount > 0
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: user.isTyping
+                                ? Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 20,
+                                        height: 16,
+                                        child: _SmallTypingIndicator(),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        'typing...',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.blue.shade600,
+                                          fontStyle: FontStyle.italic,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : Text(
+                                    user.lastMessage ?? "Start a conversation",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: user.unreadCount > 0
+                                          ? Colors.grey.shade800
+                                          : Colors.grey.shade600,
+                                      fontWeight: user.unreadCount > 0
+                                          ? FontWeight.w600
+                                          : FontWeight.normal,
+                                      height: 1.3,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                          ),
+                          if (user.unreadCount > 0)
+                            Container(
+                              margin: const EdgeInsets.only(left: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.blue.shade600,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              constraints: const BoxConstraints(
+                                minWidth: 24,
+                                minHeight: 24,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  user.unreadCount > 99
+                                      ? '99+'
+                                      : user.unreadCount.toString(),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
