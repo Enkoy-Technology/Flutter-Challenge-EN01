@@ -1,0 +1,56 @@
+import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, kIsWeb, TargetPlatform;
+
+class DefaultFirebaseOptions {
+  static FirebaseOptions get currentPlatform {
+    if (kIsWeb) {
+      return web;
+    }
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return android;
+      case TargetPlatform.iOS:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
+      case TargetPlatform.macOS:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
+      case TargetPlatform.windows:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
+      case TargetPlatform.linux:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for linux - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
+      default:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions are not supported for this platform.',
+        );
+    }
+  }
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCMxd_9uvpG2huRn1IjrioGgwzEf-bjLXk',
+    appId: '1:119994777491:web:2a835cba3e0b63a2d53266',
+    messagingSenderId: '119994777491',
+    projectId: 'flutter-challenge-en01',
+    authDomain: 'flutter-challenge-en01.firebaseapp.com',
+    storageBucket: 'flutter-challenge-en01.firebasestorage.app',
+  );
+
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyAfYqP3rjT3WdoXsmIPJLU3uVqLa4lXICo',
+    appId: '1:119994777491:android:48d78760d9df4dbfd53266',
+    messagingSenderId: '119994777491',
+    projectId: 'flutter-challenge-en01',
+    storageBucket: 'flutter-challenge-en01.firebasestorage.app',
+  );
+}
