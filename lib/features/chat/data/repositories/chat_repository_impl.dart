@@ -24,4 +24,19 @@ class ChatRepositoryImpl implements ChatRepository {
   ) {
     return remoteSource.getAllUsersWithRealtimeLastMessage(currentUserId);
   }
+
+  @override
+  Future<void> markMessagesAsRead(String chatId, String currentUserId) {
+    return remoteSource.markMessagesAsRead(chatId, currentUserId);
+  }
+
+  @override
+  Future<void> setTypingStatus(String chatId, String userId, bool isTyping) {
+    return remoteSource.setTypingStatus(chatId, userId, isTyping);
+  }
+
+  @override
+  Stream<Map<String, bool>> getTypingStatus(String chatId, String currentUserId) {
+    return remoteSource.getTypingStatus(chatId, currentUserId);
+  }
 }

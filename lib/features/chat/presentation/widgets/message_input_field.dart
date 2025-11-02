@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chat_app/core/config/app_constants.dart';
@@ -21,9 +22,38 @@ class MessageInputField extends StatefulWidget {
 
 class _MessageInputFieldState extends State<MessageInputField> {
   final controller = TextEditingController();
+  Timer? _typingTimer;
+  bool _isTyping = false;
+
+  @override
+  void dispose() {
+    _typingTimer?.cancel();
+    _stopTyping();
+    controller.dispose();
+    super.dispose();
+  }
+
+  void _startTyping() {
+    if (!_isTyping) {
+      _isTyping = true;
+      context.read<ChatBloc>().add(StartTypingEvent(widget.chatId));
+    }
+    _typingTimer?.cancel();
+    _typingTimer = Timer(const Duration(seconds: 2), () {
+      _stopTyping();
+    });
+  }
+
+  void _stopTyping() {
+    if (_isTyping) {
+      _isTyping = false;
+      context.read<ChatBloc>().add(StopTypingEvent(widget.chatId));
+    }
+  }
 
   void sendMessage() {
     if (controller.text.trim().isEmpty) return;
+    _stopTyping();
     print(" widget.receiverId ${widget.receiverId}");
     final message = MessageModel(
       id: const Uuid().v4(),
@@ -53,6 +83,7 @@ class _MessageInputFieldState extends State<MessageInputField> {
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                   ),
                 ),
+                onChanged: (_) => _startTyping(),
                 onSubmitted: (_) => sendMessage(),
               ),
             ),

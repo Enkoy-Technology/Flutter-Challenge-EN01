@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_chat_app/features/auth/data/models/user_model.dart';
 import 'package:flutter_chat_app/features/chat/data/models/chat_user.dart';
 import '../models/message_model.dart';
 import 'package:rxdart/rxdart.dart';
@@ -28,6 +27,56 @@ class ChatRemoteSource {
         .collection('messages')
         .doc(message.id)
         .set(message.toMap());
+  }
+
+  Future<void> markMessagesAsRead(String chatId, String currentUserId) async {
+    final unreadMessages = await _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .where('receiverId', isEqualTo: currentUserId)
+        .where('isRead', isEqualTo: false)
+        .get();
+
+    final batch = _firestore.batch();
+    for (var doc in unreadMessages.docs) {
+      batch.update(doc.reference, {'isRead': true});
+    }
+    await batch.commit();
+  }
+
+  Future<void> setTypingStatus(
+    String chatId,
+    String userId,
+    bool isTyping,
+  ) async {
+    await _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('typing')
+        .doc(userId)
+        .set({'isTyping': isTyping, 'timestamp': FieldValue.serverTimestamp()});
+  }
+
+  Stream<Map<String, bool>> getTypingStatus(
+    String chatId,
+    String currentUserId,
+  ) {
+    return _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('typing')
+        .snapshots()
+        .map((snapshot) {
+          final typingStatus = <String, bool>{};
+          for (var doc in snapshot.docs) {
+            if (doc.id != currentUserId) {
+              final data = doc.data();
+              typingStatus[doc.id] = data['isTyping'] ?? false;
+            }
+          }
+          return typingStatus;
+        });
   }
 
   Stream<List<ChatUser>> getAllUsersWithRealtimeLastMessage(

@@ -60,7 +60,11 @@ Future<void> setupInjector() async {
 
   // Bloc
   sl.registerFactory(
-    () => ChatBloc(getMessagesUseCase: sl(), sendMessageUseCase: sl()),
+    () => ChatBloc(
+      getMessagesUseCase: sl(),
+      sendMessageUseCase: sl(),
+      repository: sl(),
+    ),
   );
 
   // Cubit
