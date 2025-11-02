@@ -13,9 +13,6 @@ class ChatListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final brightness = theme.brightness;
-    final isDark = brightness == Brightness.dark;
 
     return BlocProvider(
       create: (_) => sl<ChatListCubit>()..loadUsers(AppConstants.currentUserId),
@@ -175,7 +172,6 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final brightness = theme.brightness;
     final isDark = brightness == Brightness.dark;
 
@@ -279,14 +275,25 @@ class _ModernUserListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final brightness = theme.brightness;
+    final isDark = brightness == Brightness.dark;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: isDark
+                ? Colors.black54.withOpacity(0.3)
+                : Colors.black.withOpacity(0.04),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -310,13 +317,17 @@ class _ModernUserListItem extends StatelessWidget {
                         border: Border.all(
                           color: (user.isOnline ?? false)
                               ? Colors.green.shade400
-                              : Colors.grey.shade300,
+                              : (isDark
+                                    ? Colors.grey.shade700
+                                    : Colors.grey.shade300),
                           width: 2.5,
                         ),
                       ),
                       child: CircleAvatar(
                         radius: 28,
-                        backgroundColor: Colors.grey.shade200,
+                        backgroundColor: isDark
+                            ? Colors.grey.shade800
+                            : Colors.grey.shade200,
                         backgroundImage: user.avatarUrl != null
                             ? NetworkImage(user.avatarUrl!)
                             : null,
@@ -324,7 +335,9 @@ class _ModernUserListItem extends StatelessWidget {
                             ? Icon(
                                 Icons.person,
                                 size: 28,
-                                color: Colors.grey.shade500,
+                                color: isDark
+                                    ? Colors.grey.shade400
+                                    : Colors.grey.shade500,
                               )
                             : null,
                       ),
@@ -361,7 +374,7 @@ class _ModernUserListItem extends StatelessWidget {
                                 fontWeight: user.unreadCount > 0
                                     ? FontWeight.bold
                                     : FontWeight.w600,
-                                color: Colors.grey.shade900,
+                                color: colorScheme.onBackground,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -373,8 +386,10 @@ class _ModernUserListItem extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 12,
                                 color: user.unreadCount > 0
-                                    ? Colors.blue.shade700
-                                    : Colors.grey.shade500,
+                                    ? colorScheme.primary
+                                    : (isDark
+                                          ? Colors.grey.shade400
+                                          : Colors.grey.shade500),
                                 fontWeight: user.unreadCount > 0
                                     ? FontWeight.w600
                                     : FontWeight.normal,
@@ -392,14 +407,17 @@ class _ModernUserListItem extends StatelessWidget {
                                       SizedBox(
                                         width: 20,
                                         height: 16,
-                                        child: _SmallTypingIndicator(),
+                                        child: _SmallTypingIndicator(
+                                          isDark: isDark,
+                                          colorScheme: colorScheme,
+                                        ),
                                       ),
                                       const SizedBox(width: 6),
                                       Text(
                                         'typing...',
                                         style: TextStyle(
                                           fontSize: 14,
-                                          color: Colors.blue.shade600,
+                                          color: colorScheme.primary,
                                           fontStyle: FontStyle.italic,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -415,8 +433,12 @@ class _ModernUserListItem extends StatelessWidget {
                                           style: TextStyle(
                                             fontSize: 14,
                                             color: user.unreadCount > 0
-                                                ? Colors.grey.shade800
-                                                : Colors.grey.shade600,
+                                                ? (isDark
+                                                      ? Colors.grey.shade300
+                                                      : Colors.grey.shade800)
+                                                : (isDark
+                                                      ? Colors.grey.shade400
+                                                      : Colors.grey.shade600),
                                             fontWeight: user.unreadCount > 0
                                                 ? FontWeight.w600
                                                 : FontWeight.normal,
@@ -430,6 +452,7 @@ class _ModernUserListItem extends StatelessWidget {
                                       if (user.lastMessageStatus != null) ...[
                                         const SizedBox(width: 4),
                                         _buildMessageStatusIcon(
+                                          context,
                                           user.lastMessageStatus!,
                                         ),
                                       ],
@@ -444,7 +467,7 @@ class _ModernUserListItem extends StatelessWidget {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.blue.shade600,
+                                color: colorScheme.primary,
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               constraints: const BoxConstraints(
@@ -494,22 +517,27 @@ class _ModernUserListItem extends StatelessWidget {
     );
   }
 
-  Widget _buildMessageStatusIcon(MessageStatus status) {
+  Widget _buildMessageStatusIcon(BuildContext context, MessageStatus status) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final brightness = theme.brightness;
+    final isDark = brightness == Brightness.dark;
+
     IconData icon;
     Color color;
 
     switch (status) {
       case MessageStatus.sent:
         icon = Icons.check;
-        color = Colors.grey.shade500;
+        color = isDark ? Colors.grey.shade400 : Colors.grey.shade500;
         break;
       case MessageStatus.delivered:
         icon = Icons.done_all;
-        color = Colors.grey.shade600;
+        color = isDark ? Colors.grey.shade300 : Colors.grey.shade600;
         break;
       case MessageStatus.read:
         icon = Icons.done_all;
-        color = Colors.blue.shade600;
+        color = colorScheme.primary;
         break;
     }
 
@@ -533,6 +561,14 @@ class _ModernUserListItem extends StatelessWidget {
 }
 
 class _SmallTypingIndicator extends StatefulWidget {
+  final bool isDark;
+  final ColorScheme colorScheme;
+
+  const _SmallTypingIndicator({
+    required this.isDark,
+    required this.colorScheme,
+  });
+
   @override
   State<_SmallTypingIndicator> createState() => _SmallTypingIndicatorState();
 }
@@ -575,7 +611,7 @@ class _SmallTypingIndicatorState extends State<_SmallTypingIndicator>
               width: 4,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.blue[600]?.withOpacity(opacity),
+                color: widget.colorScheme.primary.withOpacity(opacity),
                 shape: BoxShape.circle,
               ),
             );

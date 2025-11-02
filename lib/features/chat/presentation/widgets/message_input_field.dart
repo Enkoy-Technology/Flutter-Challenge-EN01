@@ -83,12 +83,17 @@ class _MessageInputFieldState extends State<MessageInputField> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final brightness = theme.brightness;
+    final isDark = brightness == Brightness.dark;
+
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: isDark ? Colors.black54 : Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -103,11 +108,14 @@ class _MessageInputFieldState extends State<MessageInputField> {
               // Attachment button (optional)
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
+                  color: isDark ? Colors.grey.shade800 : Colors.grey.shade100,
                   shape: BoxShape.circle,
                 ),
                 child: IconButton(
-                  icon: Icon(Icons.add, color: Colors.grey.shade700),
+                  icon: Icon(
+                    Icons.add,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                  ),
                   onPressed: () {
                     // TODO: Show attachment options
                   },
@@ -119,7 +127,7 @@ class _MessageInputFieldState extends State<MessageInputField> {
                 child: Container(
                   constraints: const BoxConstraints(maxHeight: 120),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
+                    color: isDark ? Colors.grey.shade800 : Colors.grey.shade100,
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: TextField(
@@ -127,10 +135,16 @@ class _MessageInputFieldState extends State<MessageInputField> {
                     focusNode: _focusNode,
                     maxLines: null,
                     textCapitalization: TextCapitalization.sentences,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: colorScheme.onSurface,
+                    ),
                     decoration: InputDecoration(
                       hintText: 'Type a message...',
                       hintStyle: TextStyle(
-                        color: Colors.grey.shade500,
+                        color: isDark
+                            ? Colors.grey.shade500
+                            : Colors.grey.shade500,
                         fontSize: 16,
                       ),
                       border: InputBorder.none,
@@ -139,7 +153,6 @@ class _MessageInputFieldState extends State<MessageInputField> {
                         vertical: 12,
                       ),
                     ),
-                    style: const TextStyle(fontSize: 16),
                     onChanged: (_) => _startTyping(),
                     onSubmitted: (_) => sendMessage(),
                   ),
@@ -151,10 +164,15 @@ class _MessageInputFieldState extends State<MessageInputField> {
                 decoration: BoxDecoration(
                   gradient: _hasText
                       ? LinearGradient(
-                          colors: [Colors.blue.shade600, Colors.blue.shade400],
+                          colors: [
+                            colorScheme.primary,
+                            colorScheme.primary.withOpacity(0.8),
+                          ],
                         )
                       : null,
-                  color: _hasText ? null : Colors.grey.shade300,
+                  color: _hasText
+                      ? null
+                      : (isDark ? Colors.grey.shade800 : Colors.grey.shade300),
                   shape: BoxShape.circle,
                 ),
                 child: Material(
@@ -168,7 +186,11 @@ class _MessageInputFieldState extends State<MessageInputField> {
                       alignment: Alignment.center,
                       child: Icon(
                         _hasText ? Icons.send : Icons.mic,
-                        color: _hasText ? Colors.white : Colors.grey.shade600,
+                        color: _hasText
+                            ? Colors.white
+                            : (isDark
+                                  ? Colors.grey.shade400
+                                  : Colors.grey.shade600),
                         size: 20,
                       ),
                     ),

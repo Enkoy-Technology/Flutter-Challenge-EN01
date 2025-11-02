@@ -34,10 +34,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final brightness = theme.brightness;
+    final isDark = brightness == Brightness.dark;
+
     return BlocProvider(
       create: (_) => sl<ChatBloc>()..add(LoadMessagesEvent(widget.chatId)),
       child: Scaffold(
-        backgroundColor: Colors.grey.shade100,
+        backgroundColor: theme.scaffoldBackgroundColor,
         body: SafeArea(
           child: Column(
             children: [
@@ -61,14 +65,18 @@ class _ChatScreenState extends State<ChatScreen> {
                               Icon(
                                 Icons.chat_bubble_outline,
                                 size: 64,
-                                color: Colors.grey.shade400,
+                                color: isDark
+                                    ? Colors.grey.shade600
+                                    : Colors.grey.shade400,
                               ),
                               const SizedBox(height: 16),
                               Text(
                                 'No messages yet',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: Colors.grey.shade600,
+                                  color: isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade600,
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -76,7 +84,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                 'Start the conversation!',
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: Colors.grey.shade500,
+                                  color: isDark
+                                      ? Colors.grey.shade500
+                                      : Colors.grey.shade500,
                                 ),
                               ),
                             ],
@@ -126,14 +136,18 @@ class _ChatScreenState extends State<ChatScreen> {
                               Icon(
                                 Icons.error_outline,
                                 size: 48,
-                                color: Colors.red.shade300,
+                                color: isDark
+                                    ? Colors.red.shade400
+                                    : Colors.red.shade300,
                               ),
                               const SizedBox(height: 16),
                               Text(
                                 state.message,
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: Colors.grey.shade700,
+                                  color: isDark
+                                      ? Colors.grey.shade300
+                                      : Colors.grey.shade700,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -161,20 +175,25 @@ class _ChatScreenState extends State<ChatScreen> {
 class _ChatLoadingState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final brightness = theme.brightness;
+    final isDark = brightness == Brightness.dark;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircularProgressIndicator(
             strokeWidth: 3,
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue.shade600),
+            valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
           ),
           const SizedBox(height: 24),
           Text(
             'Loading messages...',
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey.shade600,
+              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -191,13 +210,18 @@ class _ModernChatHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final brightness = theme.brightness;
+    final isDark = brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: isDark ? Colors.black54 : Colors.black.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -206,7 +230,7 @@ class _ModernChatHeader extends StatelessWidget {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(Icons.arrow_back),
+            icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
             onPressed: () => Navigator.of(context).pop(),
           ),
           Expanded(
@@ -215,9 +239,10 @@ class _ModernChatHeader extends StatelessWidget {
               children: [
                 Text(
                   receiverName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
+                    color: colorScheme.onBackground,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -233,7 +258,7 @@ class _ModernChatHeader extends StatelessWidget {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.more_vert),
+            icon: Icon(Icons.more_vert, color: colorScheme.onSurface),
             onPressed: () {
               // TODO: Show options menu
             },

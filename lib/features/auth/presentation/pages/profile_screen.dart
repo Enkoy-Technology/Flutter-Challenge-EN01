@@ -216,9 +216,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final themeService = Provider.of<ThemeService>(context);
     final preferencesService = Provider.of<PreferencesService>(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SafeArea(
@@ -373,7 +374,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           alignment: Alignment.center,
                           child: Icon(
                             Icons.camera_alt,
-                            color: Colors.blue.shade700,
+                            color: Theme.of(context).colorScheme.primary,
                             size: 20,
                           ),
                         ),
@@ -420,6 +421,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildAccountSettings(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final brightness = theme.brightness;
+    final isDark = brightness == Brightness.dark;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -430,7 +436,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.grey.shade800,
+              color: colorScheme.onBackground,
             ),
           ),
         ),
@@ -438,13 +444,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
-            side: BorderSide(color: Colors.grey.shade200, width: 1),
+            side: BorderSide(
+              color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+              width: 1,
+            ),
           ),
           child: Column(
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
+                  color: isDark
+                      ? colorScheme.primary.withOpacity(0.2)
+                      : Colors.blue.shade50,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(16),
                     topRight: Radius.circular(16),
@@ -454,28 +465,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   leading: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.blue.shade100,
+                      color: isDark
+                          ? colorScheme.primary.withOpacity(0.3)
+                          : Colors.blue.shade100,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
                       Icons.person,
-                      color: Colors.blue.shade700,
+                      color: isDark ? colorScheme.primary : Colors.blue.shade700,
                       size: 20,
                     ),
                   ),
-                  title: const Text(
+                  title: Text(
                     'Display Name',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 15,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                   subtitle: TextField(
                     controller: _nameController,
-                    style: const TextStyle(fontSize: 14),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: colorScheme.onSurface,
+                    ),
                     decoration: InputDecoration(
                       hintText: 'Enter your name',
-                      hintStyle: TextStyle(color: Colors.grey.shade400),
+                      hintStyle: TextStyle(
+                        color: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
+                      ),
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.zero,
                     ),
@@ -488,7 +507,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         )
                       : Container(
                           decoration: BoxDecoration(
-                            color: Colors.blue.shade600,
+                            color: colorScheme.primary,
                             shape: BoxShape.circle,
                           ),
                           child: IconButton(
@@ -503,32 +522,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                 ),
               ),
-              Divider(height: 1, color: Colors.grey.shade200),
+              Divider(
+                height: 1,
+                color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+              ),
               ListTile(
                 leading: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
+                    color: isDark ? Colors.grey.shade800 : Colors.grey.shade100,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
                     Icons.email,
-                    color: Colors.grey.shade700,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
                     size: 20,
                   ),
                 ),
-                title: const Text(
+                title: Text(
                   'Email',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 15,
+                    color: colorScheme.onSurface,
                   ),
                 ),
                 subtitle: Text(
                   userModel?.email ?? '',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey.shade600,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                   ),
                 ),
                 enabled: false,
@@ -545,6 +568,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ThemeService themeService,
     PreferencesService preferencesService,
   ) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final brightness = theme.brightness;
+    final isDark = brightness == Brightness.dark;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -555,7 +583,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.grey.shade800,
+              color: colorScheme.onBackground,
             ),
           ),
         ),
@@ -563,7 +591,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
-            side: BorderSide(color: Colors.grey.shade200, width: 1),
+            side: BorderSide(
+              color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+              width: 1,
+            ),
           ),
           child: Container(
             decoration: BoxDecoration(
@@ -575,7 +606,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     )
                   : null,
-              color: themeService.isDarkMode ? null : Colors.white,
+              color: themeService.isDarkMode ? null : colorScheme.surface,
               borderRadius: BorderRadius.circular(16),
             ),
             child: SwitchListTile(
@@ -612,7 +643,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     : 'Light theme is enabled',
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.grey.shade600,
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                 ),
               ),
               value: themeService.isDarkMode,
@@ -628,6 +659,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     BuildContext context,
     PreferencesService preferencesService,
   ) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final brightness = theme.brightness;
+    final isDark = brightness == Brightness.dark;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -638,7 +674,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.grey.shade800,
+              color: colorScheme.onBackground,
             ),
           ),
         ),
@@ -646,7 +682,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
-            side: BorderSide(color: Colors.grey.shade200, width: 1),
+            side: BorderSide(
+              color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+              width: 1,
+            ),
           ),
           child: Column(
             children: [
@@ -678,14 +717,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   'Receive push notifications',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade600,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                   ),
                 ),
                 value: preferencesService.notificationsEnabled,
                 onChanged: (value) =>
                     preferencesService.setNotificationsEnabled(value),
               ),
-              Divider(height: 1, color: Colors.grey.shade200),
+              Divider(
+                height: 1,
+                color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+              ),
               SwitchListTile(
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -718,7 +760,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   'Play sound for notifications',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade600,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                   ),
                 ),
                 value: preferencesService.soundEnabled,
@@ -726,7 +768,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ? (value) => preferencesService.setSoundEnabled(value)
                     : null,
               ),
-              Divider(height: 1, color: Colors.grey.shade200),
+              Divider(
+                height: 1,
+                color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+              ),
               SwitchListTile(
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -759,7 +804,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   'Vibrate for notifications',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade600,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                   ),
                 ),
                 value: preferencesService.vibrationEnabled,
@@ -825,13 +870,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
 class _ModernProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final brightness = theme.brightness;
+    final isDark = brightness == Brightness.dark;
+    
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: isDark
+                ? Colors.black54
+                : Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -848,7 +900,7 @@ class _ModernProfileHeader extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade900,
+                    color: colorScheme.onBackground,
                     letterSpacing: -0.5,
                   ),
                 ),
@@ -857,7 +909,7 @@ class _ModernProfileHeader extends StatelessWidget {
                   'Manage your account',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey.shade600,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                   ),
                 ),
               ],

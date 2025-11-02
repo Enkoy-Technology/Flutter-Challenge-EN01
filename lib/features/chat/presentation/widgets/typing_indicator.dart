@@ -7,13 +7,18 @@ class TypingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final brightness = theme.brightness;
+    final isDark = brightness == Brightness.dark;
+    
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         decoration: BoxDecoration(
-          color: Colors.grey[200],
+          color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
           borderRadius: BorderRadius.circular(18),
         ),
         child: Row(
@@ -22,13 +27,13 @@ class TypingIndicator extends StatelessWidget {
             SizedBox(
               width: 30,
               height: 20,
-              child: _TypingDot(),
+              child: _TypingDot(isDark: isDark, colorScheme: colorScheme),
             ),
             const SizedBox(width: 4),
             Text(
               '$receiverName is typing...',
               style: TextStyle(
-                color: Colors.grey[700],
+                color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
                 fontSize: 12,
                 fontStyle: FontStyle.italic,
               ),
@@ -41,6 +46,14 @@ class TypingIndicator extends StatelessWidget {
 }
 
 class _TypingDot extends StatefulWidget {
+  final bool isDark;
+  final ColorScheme colorScheme;
+
+  const _TypingDot({
+    required this.isDark,
+    required this.colorScheme,
+  });
+
   @override
   State<_TypingDot> createState() => _TypingDotState();
 }
@@ -83,7 +96,10 @@ class _TypingDotState extends State<_TypingDot>
               width: 6,
               height: 6,
               decoration: BoxDecoration(
-                color: Colors.grey[600]?.withOpacity(opacity),
+                color: (widget.isDark
+                        ? Colors.grey.shade400
+                        : Colors.grey.shade600)
+                    .withOpacity(opacity),
                 shape: BoxShape.circle,
               ),
             );
