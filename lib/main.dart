@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
       initialRoute: AppRoutes.LOGIN,
-      initialBinding: GlobalBinding(), // Use GLOBAL binding
+      initialBinding: GlobalBinding(), 
       getPages: AppPages.pages,
       defaultTransition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 300),
