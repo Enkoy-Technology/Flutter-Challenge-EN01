@@ -49,7 +49,7 @@ class _ChatScreenState extends State<ChatScreen> {
               Expanded(
                 child: BlocBuilder<ChatBloc, ChatState>(
                   builder: (context, state) {
-                    if (state is ChatLoading) {
+                    if (state is ChatLoading || state is ChatInitial) {
                       return _ChatLoadingState();
                     } else if (state is ChatLoaded) {
                       final messages = state.messages;
