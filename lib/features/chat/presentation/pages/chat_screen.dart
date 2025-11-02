@@ -46,7 +46,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: BlocBuilder<ChatBloc, ChatState>(
                   builder: (context, state) {
                     if (state is ChatLoading) {
-                      return const Center(child: CircularProgressIndicator());
+                      return _ChatLoadingState();
                     } else if (state is ChatLoaded) {
                       final messages = state.messages;
                       final typingUsers = state.typingUsers;
@@ -153,6 +153,32 @@ class _ChatScreenState extends State<ChatScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _ChatLoadingState extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(
+            strokeWidth: 3,
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue.shade600),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Loading messages...',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey.shade600,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
       ),
     );
   }

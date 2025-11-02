@@ -69,6 +69,32 @@ class ChatListScreen extends StatelessWidget {
   }
 }
 
+class _LoadingState extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(
+            strokeWidth: 3,
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue.shade600),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Loading conversations...',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey.shade600,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _ModernHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
