@@ -30,6 +30,7 @@ class ChatRemoteSource {
   }
 
   Future<void> markMessagesAsRead(String chatId, String currentUserId) async {
+    // First, mark all unread messages as delivered
     final unreadMessages = await _firestore
         .collection('chats')
         .doc(chatId)
@@ -40,9 +41,62 @@ class ChatRemoteSource {
 
     final batch = _firestore.batch();
     for (var doc in unreadMessages.docs) {
-      batch.update(doc.reference, {'isRead': true});
+      final data = doc.data();
+
+      // Update status to delivered if not already delivered/read
+      if (data['status'] == null || data['status'] == 'sent') {
+        batch.update(doc.reference, {'status': 'delivered'});
+      }
+
+      // Mark as read
+      batch.update(doc.reference, {'isRead': true, 'status': 'read'});
     }
     await batch.commit();
+  }
+
+  Future<void> markMessagesAsDelivered(
+    String chatId,
+    String currentUserId,
+  ) async {
+    // Mark messages as delivered when receiver opens chat
+    // Get all messages sent to current user that are not yet delivered/read
+    final messages = await _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .where('receiverId', isEqualTo: currentUserId)
+        .get();
+
+    final batch = _firestore.batch();
+    int updateCount = 0;
+
+    for (var doc in messages.docs) {
+      final data = doc.data();
+      final status = data['status'];
+
+      // Update status to delivered if sent or null
+      if (status == null || status == 'sent') {
+        batch.update(doc.reference, {'status': 'delivered'});
+        updateCount++;
+      }
+    }
+
+    if (updateCount > 0) {
+      await batch.commit();
+    }
+  }
+
+  Future<void> updateMessageStatus(
+    String chatId,
+    String messageId,
+    MessageStatus status,
+  ) async {
+    await _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .doc(messageId)
+        .update({'status': status.name});
   }
 
   Future<void> setTypingStatus(
@@ -142,12 +196,20 @@ class ChatRemoteSource {
           if (lastMsgSnap.docs.isNotEmpty) {
             final lastMessageData = lastMsgSnap.docs.first.data();
             final lastMessage = MessageModel.fromMap(lastMessageData);
+
+            // Check if last message is from current user to show status
+            final isLastMessageFromMe = lastMessage.senderId == currentUserId;
+            final lastMessageStatus = isLastMessageFromMe
+                ? lastMessage.status
+                : null;
+
             return updatedUser.copyWith(
               lastMessage: lastMessage.content,
               lastMessageTime: lastMessage.timestamp,
               chatId: chatId,
               unreadCount: unreadSnap.docs.length,
               isTyping: isTyping,
+              lastMessageStatus: lastMessageStatus,
             );
           }
 

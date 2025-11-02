@@ -1,3 +1,5 @@
+enum MessageStatus { sent, delivered, read }
+
 class MessageModel {
   final String id;
   final String senderId;
@@ -5,6 +7,7 @@ class MessageModel {
   final String content;
   final DateTime timestamp;
   final bool isRead;
+  final MessageStatus status;
 
   MessageModel({
     required this.id,
@@ -13,6 +16,7 @@ class MessageModel {
     required this.content,
     required this.timestamp,
     this.isRead = false,
+    this.status = MessageStatus.sent,
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +27,7 @@ class MessageModel {
       'content': content,
       'timestamp': timestamp.toIso8601String(),
       'isRead': isRead,
+      'status': status.name,
     };
   }
 
@@ -34,6 +39,19 @@ class MessageModel {
       content: map['content'],
       timestamp: DateTime.parse(map['timestamp']),
       isRead: map['isRead'] ?? false,
+      status: _parseStatus(map['status']),
     );
+  }
+
+  static MessageStatus _parseStatus(dynamic status) {
+    if (status == null) return MessageStatus.sent;
+    switch (status.toString()) {
+      case 'delivered':
+        return MessageStatus.delivered;
+      case 'read':
+        return MessageStatus.read;
+      default:
+        return MessageStatus.sent;
+    }
   }
 }

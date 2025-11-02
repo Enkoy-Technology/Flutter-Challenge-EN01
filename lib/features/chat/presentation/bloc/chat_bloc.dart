@@ -23,7 +23,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     // Load messages in real-time
     on<LoadMessagesEvent>((event, emit) async {
       try {
-        // Mark messages as read when loading
+        // First mark messages as delivered when chat is opened
+        await repository.markMessagesAsDelivered(
+          event.chatId,
+          AppConstants.currentUserId,
+        );
+        
+        // Then mark messages as read
         await repository.markMessagesAsRead(
           event.chatId,
           AppConstants.currentUserId,
@@ -49,18 +55,24 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         await emit.forEach<List<MessageModel>>(
           getMessagesUseCase(event.chatId),
           onData: (messages) {
-            // Mark new unread messages as read in real-time while chat is open
+            // Mark new unread messages as delivered first, then as read
             final unreadMessages = messages.where((msg) =>
               msg.receiverId == AppConstants.currentUserId &&
               !msg.isRead
             ).toList();
             
             if (unreadMessages.isNotEmpty) {
-              // Mark messages as read in background (don't await to avoid blocking)
-              repository.markMessagesAsRead(
+              // Mark messages as delivered first
+              repository.markMessagesAsDelivered(
                 event.chatId,
                 AppConstants.currentUserId,
-              ).catchError((_) {});
+              ).then((_) {
+                // Then mark as read
+                repository.markMessagesAsRead(
+                  event.chatId,
+                  AppConstants.currentUserId,
+                ).catchError((_) {});
+              }).catchError((_) {});
             }
             
             return ChatLoaded(

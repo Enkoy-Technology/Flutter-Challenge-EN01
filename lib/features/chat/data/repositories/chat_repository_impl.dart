@@ -31,6 +31,11 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override
+  Future<void> markMessagesAsDelivered(String chatId, String currentUserId) {
+    return remoteSource.markMessagesAsDelivered(chatId, currentUserId);
+  }
+
+  @override
   Future<void> setTypingStatus(String chatId, String userId, bool isTyping) {
     return remoteSource.setTypingStatus(chatId, userId, isTyping);
   }
@@ -38,5 +43,10 @@ class ChatRepositoryImpl implements ChatRepository {
   @override
   Stream<Map<String, bool>> getTypingStatus(String chatId, String currentUserId) {
     return remoteSource.getTypingStatus(chatId, currentUserId);
+  }
+
+  @override
+  Future<void> updateMessageStatus(String chatId, String messageId, MessageStatus status) {
+    return remoteSource.updateMessageStatus(chatId, messageId, status);
   }
 }

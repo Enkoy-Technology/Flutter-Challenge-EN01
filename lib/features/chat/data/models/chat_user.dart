@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'message_model.dart';
 
 class ChatUser {
   final String id;
@@ -11,6 +12,7 @@ class ChatUser {
   final bool? isOnline;
   final int unreadCount;
   final bool isTyping;
+  final MessageStatus? lastMessageStatus;
 
   ChatUser({
     required this.id,
@@ -23,6 +25,7 @@ class ChatUser {
     this.isOnline,
     this.unreadCount = 0,
     this.isTyping = false,
+    this.lastMessageStatus,
   });
 
   factory ChatUser.fromMap(Map<String, dynamic> map, String id) {
@@ -47,6 +50,7 @@ class ChatUser {
     bool? isOnline,
     int? unreadCount,
     bool? isTyping,
+    MessageStatus? lastMessageStatus,
   }) {
     return ChatUser(
       id: id,
@@ -59,6 +63,7 @@ class ChatUser {
       isOnline: isOnline ?? this.isOnline,
       unreadCount: unreadCount ?? this.unreadCount,
       isTyping: isTyping ?? this.isTyping,
+      lastMessageStatus: lastMessageStatus ?? this.lastMessageStatus,
     );
   }
 }

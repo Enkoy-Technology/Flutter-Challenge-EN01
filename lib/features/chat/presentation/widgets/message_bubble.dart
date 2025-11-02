@@ -85,13 +85,9 @@ class MessageBubble extends StatelessWidget {
                           fontWeight: FontWeight.w400,
                         ),
                       ),
-                      if (isMe && message.isRead) ...[
+                      if (isMe) ...[
                         const SizedBox(width: 4),
-                        Icon(
-                          Icons.done_all,
-                          size: 14,
-                          color: Colors.white.withOpacity(0.8),
-                        ),
+                        _buildStatusIcon(message.status),
                       ],
                     ],
                   ),
@@ -123,6 +119,32 @@ class MessageBubble extends StatelessWidget {
           ],
         ],
       ),
+    );
+  }
+
+  Widget _buildStatusIcon(MessageStatus status) {
+    IconData icon;
+    Color color;
+
+    switch (status) {
+      case MessageStatus.sent:
+        icon = Icons.check;
+        color = Colors.white.withOpacity(0.7);
+        break;
+      case MessageStatus.delivered:
+        icon = Icons.done_all;
+        color = Colors.white.withOpacity(0.8);
+        break;
+      case MessageStatus.read:
+        icon = Icons.done_all;
+        color = Colors.blue.shade200;
+        break;
+    }
+
+    return Icon(
+      icon,
+      size: 14,
+      color: color,
     );
   }
 

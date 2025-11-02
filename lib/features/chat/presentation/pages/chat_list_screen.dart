@@ -4,6 +4,7 @@ import 'package:flutter_chat_app/core/config/app_constants.dart';
 import 'package:flutter_chat_app/core/config/app_router.dart';
 import 'package:flutter_chat_app/core/di/injector.dart';
 import 'package:flutter_chat_app/features/chat/data/models/chat_user.dart';
+import 'package:flutter_chat_app/features/chat/data/models/message_model.dart';
 import '../bloc/cubit/chat_list_cubit.dart';
 
 class ChatListScreen extends StatelessWidget {
@@ -23,7 +24,7 @@ class ChatListScreen extends StatelessWidget {
                 child: BlocBuilder<ChatListCubit, ChatListState>(
                   builder: (context, state) {
                     if (state is ChatListLoading) {
-                      return const Center(child: CircularProgressIndicator());
+                      return _LoadingState();
                     } else if (state is ChatListLoaded) {
                       final users = state.users;
 
@@ -339,20 +340,34 @@ class _ModernUserListItem extends StatelessWidget {
                                       ),
                                     ],
                                   )
-                                : Text(
-                                    user.lastMessage ?? "Start a conversation",
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: user.unreadCount > 0
-                                          ? Colors.grey.shade800
-                                          : Colors.grey.shade600,
-                                      fontWeight: user.unreadCount > 0
-                                          ? FontWeight.w600
-                                          : FontWeight.normal,
-                                      height: 1.3,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
+                                : Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          user.lastMessage ??
+                                              "Start a conversation",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: user.unreadCount > 0
+                                                ? Colors.grey.shade800
+                                                : Colors.grey.shade600,
+                                            fontWeight: user.unreadCount > 0
+                                                ? FontWeight.w600
+                                                : FontWeight.normal,
+                                            height: 1.3,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      // Show message status if last message is from current user
+                                      if (user.lastMessageStatus != null) ...[
+                                        const SizedBox(width: 4),
+                                        _buildMessageStatusIcon(
+                                          user.lastMessageStatus!,
+                                        ),
+                                      ],
+                                    ],
                                   ),
                           ),
                           if (user.unreadCount > 0)
@@ -411,6 +426,28 @@ class _ModernUserListItem extends StatelessWidget {
         'receiverId': user.id,
       },
     );
+  }
+
+  Widget _buildMessageStatusIcon(MessageStatus status) {
+    IconData icon;
+    Color color;
+
+    switch (status) {
+      case MessageStatus.sent:
+        icon = Icons.check;
+        color = Colors.grey.shade500;
+        break;
+      case MessageStatus.delivered:
+        icon = Icons.done_all;
+        color = Colors.grey.shade600;
+        break;
+      case MessageStatus.read:
+        icon = Icons.done_all;
+        color = Colors.blue.shade600;
+        break;
+    }
+
+    return Icon(icon, size: 14, color: color);
   }
 
   String _formatTimestamp(DateTime time) {
