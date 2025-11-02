@@ -30,8 +30,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final brightness = theme.brightness;
+    final isDark = brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: BlocConsumer<RegisterCubit, RegisterState>(
           listener: (context, state) {
@@ -99,7 +104,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
-                          color: Colors.grey.shade900,
+                          color: colorScheme.onBackground,
                           letterSpacing: -0.5,
                         ),
                         textAlign: TextAlign.center,
@@ -109,7 +114,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         "Sign up to get started",
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.grey.shade600,
+                          color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -201,7 +206,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             "Already have an account? ",
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.grey.shade600,
+                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                             ),
                           ),
                           TextButton(
@@ -220,7 +225,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.blue.shade600,
+                                color: colorScheme.primary,
                               ),
                             ),
                           ),

@@ -28,8 +28,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final brightness = theme.brightness;
+    final isDark = brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: BlocConsumer<LoginCubit, LoginState>(
           listener: (context, state) {
@@ -97,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
-                          color: Colors.grey.shade900,
+                          color: colorScheme.onBackground,
                           letterSpacing: -0.5,
                         ),
                         textAlign: TextAlign.center,
@@ -107,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         "Sign in to continue",
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.grey.shade600,
+                          color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -182,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             "Don't have an account? ",
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.grey.shade600,
+                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                             ),
                           ),
                           TextButton(
@@ -201,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.blue.shade600,
+                                color: colorScheme.primary,
                               ),
                             ),
                           ),

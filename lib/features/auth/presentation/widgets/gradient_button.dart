@@ -12,6 +12,10 @@ class GradientButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final brightness = theme.brightness;
+    final isDark = brightness == Brightness.dark;
     final isEnabled = onPressed != null;
     
     return Container(
@@ -20,20 +24,20 @@ class GradientButton extends StatelessWidget {
         gradient: isEnabled
             ? LinearGradient(
                 colors: [
-                  Colors.blue.shade600,
-                  Colors.blue.shade400,
-                  Colors.purple.shade400,
+                  colorScheme.primary,
+                  colorScheme.primary.withOpacity(0.8),
+                  colorScheme.secondary.withOpacity(0.8),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               )
             : null,
-        color: isEnabled ? null : Colors.grey.shade300,
+        color: isEnabled ? null : isDark ? Colors.grey.shade800 : Colors.grey.shade300,
         borderRadius: BorderRadius.circular(16),
         boxShadow: isEnabled
             ? [
                 BoxShadow(
-                  color: Colors.blue.withOpacity(0.3),
+                  color: colorScheme.primary.withOpacity(0.3),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -51,7 +55,7 @@ class GradientButton extends StatelessWidget {
             child: Text(
               text,
               style: TextStyle(
-                color: isEnabled ? Colors.white : Colors.grey.shade600,
+                color: isEnabled ? Colors.white : (isDark ? Colors.grey.shade500 : Colors.grey.shade600),
                 fontSize: 17,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 0.5,
