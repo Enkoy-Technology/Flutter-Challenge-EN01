@@ -1,0 +1,2 @@
+const int MIN_PASSWORD_LENGTH = 6;
+const int IMAGE_COMPRESSION_QUALITY = 75;
