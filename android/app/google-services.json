@@ -1,0 +1,395 @@
+{
+  "project_info": {
+    "project_number": "491805772352",
+    "firebase_url": "https://behulu-telemedicine-default-rtdb.firebaseio.com",
+    "project_id": "behulu-telemedicine",
+    "storage_bucket": "behulu-telemedicine.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491805772352:android:198d9fb243dfa9e2d9ada5",
+        "android_client_info": {
+          "package_name": "com.app.chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD76FL6Zyi7GrM3H_gkRle2F3eNcM12lSU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "491805772352-n1i6v1qk4ne5jmd1c8iab2n2hk7h9it3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.universalCustomer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491805772352:android:63a1a6b525167032d9ada5",
+        "android_client_info": {
+          "package_name": "com.app.myhello"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD76FL6Zyi7GrM3H_gkRle2F3eNcM12lSU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "491805772352-n1i6v1qk4ne5jmd1c8iab2n2hk7h9it3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.universalCustomer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491805772352:android:7dbcd0d684e8054cd9ada5",
+        "android_client_info": {
+          "package_name": "com.app.universal_customer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "491805772352-3up6cu0a7aksp36grspt6l8fqk64hmag.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.universal_customer",
+            "certificate_hash": "df53f96e1f96885179698202bbf68c8a4c30ef0f"
+          }
+        },
+        {
+          "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD76FL6Zyi7GrM3H_gkRle2F3eNcM12lSU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "491805772352-n1i6v1qk4ne5jmd1c8iab2n2hk7h9it3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.universalCustomer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491805772352:android:13917f858307c772d9ada5",
+        "android_client_info": {
+          "package_name": "com.example.clientTeleMedicine"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "491805772352-s8shtq5t3ounfdr4ahmkth1aiik3mgi1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.clientTeleMedicine",
+            "certificate_hash": "df53f96e1f96885179698202bbf68c8a4c30ef0f"
+          }
+        },
+        {
+          "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD76FL6Zyi7GrM3H_gkRle2F3eNcM12lSU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "491805772352-n1i6v1qk4ne5jmd1c8iab2n2hk7h9it3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.universalCustomer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491805772352:android:30e405ae5372d283d9ada5",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD76FL6Zyi7GrM3H_gkRle2F3eNcM12lSU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "491805772352-n1i6v1qk4ne5jmd1c8iab2n2hk7h9it3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.universalCustomer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491805772352:android:f08f3d71df581e5fd9ada5",
+        "android_client_info": {
+          "package_name": "com.example.providerTeleMedicine"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "491805772352-ej1s9en4dqmf4f2602205sv5g67sj6ai.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.providerTeleMedicine",
+            "certificate_hash": "df53f96e1f96885179698202bbf68c8a4c30ef0f"
+          }
+        },
+        {
+          "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD76FL6Zyi7GrM3H_gkRle2F3eNcM12lSU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "491805772352-n1i6v1qk4ne5jmd1c8iab2n2hk7h9it3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.universalCustomer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491805772352:android:302017496ce58d11d9ada5",
+        "android_client_info": {
+          "package_name": "com.example.universal_customer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD76FL6Zyi7GrM3H_gkRle2F3eNcM12lSU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "491805772352-n1i6v1qk4ne5jmd1c8iab2n2hk7h9it3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.universalCustomer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491805772352:android:16dcd720bc70856cd9ada5",
+        "android_client_info": {
+          "package_name": "com.hello.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD76FL6Zyi7GrM3H_gkRle2F3eNcM12lSU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "491805772352-n1i6v1qk4ne5jmd1c8iab2n2hk7h9it3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.universalCustomer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491805772352:android:065aeb33b6494881d9ada5",
+        "android_client_info": {
+          "package_name": "com.myHello.app.myhello_driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD76FL6Zyi7GrM3H_gkRle2F3eNcM12lSU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "491805772352-n1i6v1qk4ne5jmd1c8iab2n2hk7h9it3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.universalCustomer"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491805772352:android:98a57d8e3ad5fd9bd9ada5",
+        "android_client_info": {
+          "package_name": "com.universal.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD76FL6Zyi7GrM3H_gkRle2F3eNcM12lSU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "491805772352-40l6r27en7dd0gsc95sqqkmdner30q3t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "491805772352-n1i6v1qk4ne5jmd1c8iab2n2hk7h9it3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.universalCustomer"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
