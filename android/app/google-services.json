@@ -1,0 +1,105 @@
+{
+  "project_info": {
+    "project_number": "942521009861",
+    "project_id": "milkiway-f6e17",
+    "storage_bucket": "milkiway-f6e17.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942521009861:android:81a6c31c0d0e0e8d1c52ac",
+        "android_client_info": {
+          "package_name": "com.example.flutter_chat_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAazDwTwG8HWiX27bslIhbQcpGeuDv9yyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942521009861:android:1ec7c4252162c6691c52ac",
+        "android_client_info": {
+          "package_name": "com.milkiway.birhanlinkparent.saas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAazDwTwG8HWiX27bslIhbQcpGeuDv9yyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942521009861:android:3312ddbb8e90c5a91c52ac",
+        "android_client_info": {
+          "package_name": "com.milkiway.birhanlinkstaff.saas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAazDwTwG8HWiX27bslIhbQcpGeuDv9yyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942521009861:android:f463271d7b7203d41c52ac",
+        "android_client_info": {
+          "package_name": "com.wrteam.saas.school"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAazDwTwG8HWiX27bslIhbQcpGeuDv9yyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942521009861:android:0e31a1d635c136db1c52ac",
+        "android_client_info": {
+          "package_name": "com.wrteam.saas.staff"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAazDwTwG8HWiX27bslIhbQcpGeuDv9yyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
