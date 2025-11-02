@@ -1,9 +1,12 @@
+import 'package:enkoy_chat/enums/chat_message_type.enum.dart';
+import 'package:enkoy_chat/models/Chat.dart';
 import 'package:enkoy_chat/models/ChatConversation.dart';
 import 'package:enkoy_chat/ui/common/app_colors.dart';
 import 'package:enkoy_chat/ui/common/dimension.dart';
 import 'package:enkoy_chat/ui/common/font.dart';
 import 'package:enkoy_chat/ui/common/utils/avatar_utils.dart';
 import 'package:enkoy_chat/ui/common/utils/datetime_utils.dart';
+import 'package:enkoy_chat/ui/common/widgets/app_image.dart';
 import 'package:enkoy_chat/ui/views/chat/widgets/typing_indicator_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -38,30 +41,31 @@ class ChatListTile extends StatelessWidget {
                       color: kcBackground(context),
                       child: ListTile(
                         horizontalTitleGap: kdSpace,
-                        leading: Visibility(
-                            visible: !snapshot.hasData || conversee == null,
-                            replacement: AvatarUtils.getAvatar(context,
-                                showOutlineBorder: true,
-                                color: kcGreen,
-                                userAccount: chatConversation.conversee!),
-                            child: AvatarUtils.getAvatar(context,
-                                userAccount: chatConversation.conversee!)),
-                        title: Text(
-                          chatConversation.conversee!.firstName,
-                          style: kfBodyMedium(context,
-                              fontWeight: FontWeight.bold),
+                        leading: AvatarUtils.getAvatar(context,
+                            isOnline: snapshot.hasData && conversee != null,
+                            userAccount: chatConversation.conversee!),
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              chatConversation.conversee!.firstName,
+                              style: kfBodyMedium(context,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            if (conversee == null) ...[
+                              Text(
+                                DateTimeUtils.getFormattedLastseenStatus(
+                                  chatConversation.conversee!.lastUpdatedAt!,
+                                ),
+                                style: kfLabelSmall(context),
+                              ),
+                              kdSpaceSmall.height,
+                            ]
+                          ],
                         ),
                         subtitle: Visibility(
                           visible: conversee != null && conversee["isTyping"],
-                          replacement: Text(
-                            chatConversation.chats.isNotEmpty
-                                ? chatConversation.chats.last.message.text ?? ""
-                                : "",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: kfBodySmall(context,
-                                color: kcLightGreyish(context)),
-                          ),
+                          replacement: _getLastMessage(context),
                           child: TypingIndicatorWidget(
                             color: kcPrimary(context),
                           ),
@@ -90,6 +94,38 @@ class ChatListTile extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+
+  Widget _getLastMessage(BuildContext context) {
+    if (chatConversation.chats.isEmpty) {
+      return const Text("");
+    }
+    Chat lastMessage = chatConversation.chats.last;
+    if (lastMessage.message.contentType.isPicture) {
+      return Row(
+        children: [
+          AppImageWidget(
+            url: lastMessage.message.attachmentUrl ?? "",
+            width: 30,
+            height: 30,
+          ),
+          Text(lastMessage.message.caption ?? "",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: kfBodySmall(context, color: kcLightGreyish(context)))
+        ],
+      );
+    }
+    return Text(
+      chatConversation.chats.isNotEmpty
+          ? chatConversation.chats.last.message.contentType.isPicture
+              ? 'Picture'
+              : chatConversation.chats.last.message.text ?? ""
+          : "",
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: kfBodySmall(context, color: kcLightGreyish(context)),
     );
   }
 }

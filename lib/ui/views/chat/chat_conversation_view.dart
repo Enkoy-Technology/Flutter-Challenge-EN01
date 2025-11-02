@@ -5,6 +5,7 @@ import 'package:enkoy_chat/ui/common/dimension.dart';
 import 'package:enkoy_chat/ui/common/font.dart';
 import 'package:enkoy_chat/ui/common/icons.dart';
 import 'package:enkoy_chat/ui/common/utils/avatar_utils.dart';
+import 'package:enkoy_chat/ui/common/utils/datetime_utils.dart';
 import 'package:enkoy_chat/ui/common/widgets/app_bar_widget.dart';
 import 'package:enkoy_chat/ui/common/widgets/loading_indicator.dart';
 import 'package:enkoy_chat/ui/views/chat/widgets/chat_message_card.dart';
@@ -168,42 +169,7 @@ class ChatConversationView extends StackedView<ChatConversationViewModel> {
             leading: GestureDetector(
                 onTap: viewModel.onBack,
                 child: Icon(kiArrowBack, color: kcOnPrimary(context))),
-            titleWidget: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    AvatarUtils.getAvatar(
-                      context,
-                      userAccount: chatConversation.conversee!,
-                      radius: 18,
-                    ),
-                    kdSpace.width,
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          chatConversation.conversee!.firstName,
-                          style: kfBrandStyle(context,
-                              fontWeight: FontWeight.w600,
-                              color: kcOnPrimary(context)),
-                        ),
-                        StreamBuilder<Map<String, dynamic>?>(
-                            stream: viewModel.getConverseeOnlineStatus(),
-                            builder: ((ctx, snapshot) {
-                              if (snapshot.data == null || !snapshot.hasData) {
-                                return Container();
-                              }
-                              dynamic data = snapshot.data;
-                              return _renderConverseeStatus(data, context);
-                            }))
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            titleWidget: _converseeAvatar(viewModel, context),
             centerTitle: false,
             actions: const [],
           ),
@@ -262,11 +228,6 @@ class ChatConversationView extends StackedView<ChatConversationViewModel> {
                                 .value
                                 .mapIndexed((i, chat) => ChatMessageCard(
                                       chat: chat,
-                                      prevChat: i + 1 <=
-                                              chatsGrouped[index].value.length -
-                                                  1
-                                          ? chatsGrouped[index].value[i + 1]
-                                          : null,
                                       conversee: chatConversation.conversee!,
                                       me: viewModel.myEmail,
                                     ))).reversed
@@ -280,6 +241,45 @@ class ChatConversationView extends StackedView<ChatConversationViewModel> {
         ]));
   }
 
+  StreamBuilder<Map<String, dynamic>?> _converseeAvatar(
+      ChatConversationViewModel viewModel, BuildContext context) {
+    return StreamBuilder<Map<String, dynamic>?>(
+        stream: viewModel.getConverseeOnlineStatus(),
+        builder: ((ctx, snapshot) {
+          dynamic data = snapshot.data;
+          return Row(
+            children: [
+              AvatarUtils.getAvatar(
+                context,
+                userAccount: chatConversation.conversee!,
+                isOnline: snapshot.data != null && snapshot.hasData,
+                radius: 18,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    chatConversation.conversee!.firstName,
+                    style: kfBrandStyle(context,
+                        fontWeight: FontWeight.w600,
+                        color: kcOnPrimary(context)),
+                  ),
+                  if (snapshot.hasData && snapshot.data != null) ...[
+                    _renderConverseeStatus(data, context)
+                  ] else ...[
+                    Text(
+                      DateTimeUtils.getFormattedLastseenStatus(
+                          chatConversation.conversee!.lastUpdatedAt!),
+                      style: kfBodySmall(context, color: kcOnPrimary(context)),
+                    )
+                  ]
+                ],
+              )
+            ],
+          );
+        }));
+  }
+
   @override
   ChatConversationViewModel viewModelBuilder(
     BuildContext context,
@@ -290,15 +290,9 @@ class ChatConversationView extends StackedView<ChatConversationViewModel> {
     if (data["isTyping"]) {
       return const TypingIndicatorWidget();
     }
-    return Row(
-      children: [
-        CircleAvatar(radius: 2, backgroundColor: kcOnPrimary(context)),
-        kdSpaceTiny.width,
-        Text(
-          "online",
-          style: kfBodySmall(context, color: kcOnPrimary(context)),
-        ),
-      ],
+    return Text(
+      "online",
+      style: kfBodySmall(context, color: kcOnPrimary(context)),
     );
   }
 

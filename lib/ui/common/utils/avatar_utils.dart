@@ -26,13 +26,14 @@ class AvatarUtils {
     }
   }
 
-  static Widget getAvatar(BuildContext context,
-      {required UserAccount userAccount,
-      Color? color,
-      double radius = 25,
-      bool showOutlineBorder = false,
-      TextStyle? textStyle,
-      bool isProgressing = false}) {
+  static Widget getAvatar(
+    BuildContext context, {
+    required UserAccount userAccount,
+    Color? color,
+    double radius = 25,
+    bool isOnline = false,
+    TextStyle? textStyle,
+  }) {
     String thumbnail = userAccount.firstName[0];
 
     Widget avatar = CircleAvatar(
@@ -53,33 +54,22 @@ class AvatarUtils {
         )),
       );
     }
-    if (showOutlineBorder) {
-      return isProgressing
-          ? Stack(
-              children: [
-                SizedBox(
-                  width: radius * 2,
-                  height: radius * 2,
-                  child: CircularProgressIndicator(
-                    backgroundColor: kcBackground(context),
-                  ),
-                ),
-                CircleAvatar(
-                    backgroundColor: kcBackground(context),
-                    radius: radius,
-                    child: avatar)
-              ],
-            )
-          : CircleAvatar(
-              backgroundColor: color ?? kcPrimary(context),
-              radius: radius + 2,
+
+    return Stack(
+      children: [
+        avatar,
+        Positioned(
+            left: 0,
+            bottom: 7,
+            child: CircleAvatar(
+              backgroundColor: kcWhite,
+              radius: radius * .25,
               child: CircleAvatar(
-                  backgroundColor: kcBackground(context),
-                  radius: radius,
-                  child: avatar),
-            );
-    }
-    return CircleAvatar(
-        backgroundColor: kcBackground(context), radius: radius, child: avatar);
+                radius: radius * .2,
+                backgroundColor: isOnline ? kcGreen : kcRed,
+              ),
+            ))
+      ],
+    );
   }
 }

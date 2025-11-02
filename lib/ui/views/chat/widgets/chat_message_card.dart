@@ -3,14 +3,12 @@ import 'package:enkoy_chat/models/UserAccount.dart';
 import 'package:enkoy_chat/ui/common/app_colors.dart';
 import 'package:enkoy_chat/ui/common/dimension.dart';
 import 'package:enkoy_chat/ui/common/font.dart';
-import 'package:enkoy_chat/ui/common/utils/avatar_utils.dart';
 import 'package:enkoy_chat/ui/common/utils/datetime_utils.dart';
 import 'package:enkoy_chat/ui/common/widgets/app_image.dart';
 import 'package:enkoy_chat/ui/views/chat/widgets/chat_message_status_widget.dart';
 import 'package:flutter/material.dart';
 
 class ChatMessageCard extends StatelessWidget {
-  final Chat? prevChat;
   final Chat chat;
   final String me;
   final UserAccount conversee;
@@ -18,8 +16,7 @@ class ChatMessageCard extends StatelessWidget {
       {super.key,
       required this.chat,
       required this.me,
-      required this.conversee,
-      required this.prevChat});
+      required this.conversee});
 
   bool get isMyMesssage => chat.from == me;
   @override
@@ -32,16 +29,7 @@ class ChatMessageCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment:
               isMyMesssage ? MainAxisAlignment.end : MainAxisAlignment.start,
-          children: [
-            if (!isMyMesssage && (prevChat == null || prevChat!.from == me))
-              AvatarUtils.getAvatar(context, userAccount: conversee),
-            if (!isMyMesssage && !(prevChat == null || prevChat!.from == me))
-              const SizedBox(
-                width: 52,
-              ),
-            if (!isMyMesssage) kdSpaceSmall.width,
-            messageContent(context)
-          ],
+          children: [messageContent(context)],
         ),
         kdSpaceLarge.height
       ],
@@ -51,8 +39,8 @@ class ChatMessageCard extends StatelessWidget {
   Container messageContent(BuildContext context) {
     Color bgColor = isMyMesssage ? kcSecondary(context) : kcWhite;
     Color textColor = isMyMesssage
-        ? kcOnPrimary(context).withOpacity(0.95)
-        : kcOnBackground(context).withOpacity(0.75);
+        ? kcOnPrimary(context).withValues(alpha: .95)
+        : kcOnBackground(context).withValues(alpha: 0.75);
 
     final hasAttachment = chat.message.attachmentUrl != null &&
         chat.message.attachmentUrl!.isNotEmpty;
