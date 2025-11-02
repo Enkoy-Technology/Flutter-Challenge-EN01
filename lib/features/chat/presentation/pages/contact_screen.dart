@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/features/chat/presentation/pages/call_screen.dart';
+import 'package:flutter_chat_app/features/chat/presentation/widgets/modern_header.dart';
 
 class ContactsScreen extends StatelessWidget {
   const ContactsScreen({super.key});
