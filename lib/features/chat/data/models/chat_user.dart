@@ -10,6 +10,7 @@ class ChatUser {
   final String? chatId;
   final bool? isOnline;
   final int unreadCount;
+  final bool isTyping;
 
   ChatUser({
     required this.id,
@@ -21,6 +22,7 @@ class ChatUser {
     this.chatId,
     this.isOnline,
     this.unreadCount = 0,
+    this.isTyping = false,
   });
 
   factory ChatUser.fromMap(Map<String, dynamic> map, String id) {
@@ -44,6 +46,7 @@ class ChatUser {
     String? chatId,
     bool? isOnline,
     int? unreadCount,
+    bool? isTyping,
   }) {
     return ChatUser(
       id: id,
@@ -55,6 +58,7 @@ class ChatUser {
       chatId: chatId ?? this.chatId,
       isOnline: isOnline ?? this.isOnline,
       unreadCount: unreadCount ?? this.unreadCount,
+      isTyping: isTyping ?? this.isTyping,
     );
   }
 }

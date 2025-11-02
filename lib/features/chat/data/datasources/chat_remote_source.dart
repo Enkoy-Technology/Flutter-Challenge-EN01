@@ -114,27 +114,47 @@ class ChatRemoteSource {
             .where('isRead', isEqualTo: false)
             .snapshots();
 
-        return Rx.combineLatest2(lastMessageStream, unreadStream, (
-          QuerySnapshot lastMsgSnap,
-          QuerySnapshot unreadSnap,
+        // Listen for typing status
+        final typingStream = _firestore
+            .collection('chats')
+            .doc(chatId)
+            .collection('typing')
+            .doc(user.id)
+            .snapshots()
+            .map<bool>((doc) {
+              final data = doc.data();
+              return data?['isTyping'] as bool? ?? false;
+            })
+            .startWith(false);
+
+        return Rx.combineLatest3<
+          QuerySnapshot<Map<String, dynamic>>,
+          QuerySnapshot<Map<String, dynamic>>,
+          bool,
+          ChatUser
+        >(lastMessageStream, unreadStream, typingStream, (
+          QuerySnapshot<Map<String, dynamic>> lastMsgSnap,
+          QuerySnapshot<Map<String, dynamic>> unreadSnap,
+          bool isTyping,
         ) {
           final updatedUser = userMap[user.id]!;
 
           if (lastMsgSnap.docs.isNotEmpty) {
-            final lastMessageData =
-                lastMsgSnap.docs.first.data() as Map<String, dynamic>;
+            final lastMessageData = lastMsgSnap.docs.first.data();
             final lastMessage = MessageModel.fromMap(lastMessageData);
             return updatedUser.copyWith(
               lastMessage: lastMessage.content,
               lastMessageTime: lastMessage.timestamp,
               chatId: chatId,
               unreadCount: unreadSnap.docs.length,
+              isTyping: isTyping,
             );
           }
 
           return updatedUser.copyWith(
             chatId: chatId,
             unreadCount: unreadSnap.docs.length,
+            isTyping: isTyping,
           );
         });
       });

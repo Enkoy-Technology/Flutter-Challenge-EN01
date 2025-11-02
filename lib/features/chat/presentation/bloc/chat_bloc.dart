@@ -48,10 +48,26 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         
         await emit.forEach<List<MessageModel>>(
           getMessagesUseCase(event.chatId),
-          onData: (messages) => ChatLoaded(
-            messages,
-            _currentTypingUsers,
-          ),
+          onData: (messages) {
+            // Mark new unread messages as read in real-time while chat is open
+            final unreadMessages = messages.where((msg) =>
+              msg.receiverId == AppConstants.currentUserId &&
+              !msg.isRead
+            ).toList();
+            
+            if (unreadMessages.isNotEmpty) {
+              // Mark messages as read in background (don't await to avoid blocking)
+              repository.markMessagesAsRead(
+                event.chatId,
+                AppConstants.currentUserId,
+              ).catchError((_) {});
+            }
+            
+            return ChatLoaded(
+              messages,
+              _currentTypingUsers,
+            );
+          },
           onError: (_, __) => ChatError('Failed to load messages'),
         );
       } catch (e) {

@@ -118,7 +118,26 @@ class _UserListItem extends StatelessWidget {
           user.name,
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
-        subtitle: user.lastMessage != null
+        subtitle: user.isTyping
+            ? Row(
+                children: [
+                  SizedBox(
+                    width: 20,
+                    height: 16,
+                    child: _SmallTypingIndicator(),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'typing...',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.blue[600],
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
+              )
+            : user.lastMessage != null
             ? Text(
                 user.lastMessage!,
                 style: TextStyle(
@@ -197,5 +216,59 @@ class _UserListItem extends StatelessWidget {
     } else {
       return "${time.day}/${time.month}/${time.year}";
     }
+  }
+}
+
+class _SmallTypingIndicator extends StatefulWidget {
+  @override
+  State<_SmallTypingIndicator> createState() => _SmallTypingIndicatorState();
+}
+
+class _SmallTypingIndicatorState extends State<_SmallTypingIndicator>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(3, (index) {
+            final delay = index * 0.2;
+            final animationValue = (_controller.value + delay) % 1.0;
+            final opacity = (animationValue < 0.5)
+                ? animationValue * 2
+                : 2 - (animationValue * 2);
+
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 1),
+              width: 4,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.blue[600]?.withOpacity(opacity),
+                shape: BoxShape.circle,
+              ),
+            );
+          }),
+        );
+      },
+    );
   }
 }
