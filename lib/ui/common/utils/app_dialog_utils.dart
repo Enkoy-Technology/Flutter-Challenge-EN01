@@ -99,7 +99,7 @@ class AppDialogUtils {
     bool hasPermission = await _photoPickerPermission();
     if (hasPermission) {
       XFile? file =
-          await getFile(FileType.image, quality: IMAGE_COMPRESSION_QUALITY);
+          await _getFile(FileType.image, quality: IMAGE_COMPRESSION_QUALITY);
       return file;
     } else {
       Fluttertoast.showToast(msg: "Permission Denied");
@@ -124,7 +124,8 @@ class AppDialogUtils {
           if (status.isDenied) {
             status = await Permission.photos.request();
           }
-          hasPermission = status == PermissionStatus.granted;
+          hasPermission = status == PermissionStatus.granted ||
+              status == PermissionStatus.limited;
         } else {
           // API <=32
           PermissionStatus status = await Permission.storage.status;
@@ -158,7 +159,7 @@ class AppDialogUtils {
     }
   }
 
-  static getFile(FileType fileType,
+  static _getFile(FileType fileType,
       {int quality = IMAGE_COMPRESSION_QUALITY}) async {
     final ImagePicker picker = ImagePicker();
     if (fileType == FileType.image) {

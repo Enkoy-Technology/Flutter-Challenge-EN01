@@ -1,3 +1,4 @@
+import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:enkoy_chat/enums/chat_message_status.enum.dart';
 import 'package:enkoy_chat/models/Chat.dart';
 import 'package:enkoy_chat/models/ChatConversation.dart';
@@ -15,7 +16,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 /// Unimplemented features:
 /// TODO: Caching
 /// TODO: Paginating chat messages
-/// TODO: Supporing different type of message content(audio, picture, document)
+/// TODO: Supporing different type of message content(audio, document)
 /// TODO: Audio/video calling
 /// TODO: Chat edit, delete
 /// TODO: Push notifications
@@ -36,6 +37,9 @@ class ChatService {
   User get _me => _auth.currentUser!;
   String get myEmail => _me.email!;
   String get myId => _me.uid;
+
+  final CloudinaryPublic cloudinary =
+      CloudinaryPublic('dc0pyembs', 'my_unsigned_preset', cache: false);
 
   Stream<ChatConversation> fetchSpecificConversationStream(String convId) {
     return _firestore
@@ -302,16 +306,15 @@ class ChatService {
   }
 
   Future<String?> uploadImage(XFile? imageFile) async {
-    /// Due to firebase storage require billing project, I am skipping the actual upload part
+    /// Due to firebase storage require billing project
+    /// I'll go with cloudnary
     try {
       if (imageFile == null) return null;
 
-      /// TODO
-
-      /// Any image compression logic can be added here
-      /// For example, using flutter_image_compress package
-      /// Upload image to firebase storage and return the download url
-      /// By: Amanuel.T (AKA: Emant)
+      CloudinaryResponse response = await cloudinary.uploadFile(
+          CloudinaryFile.fromFile(imageFile.path,
+              resourceType: CloudinaryResourceType.Image));
+      return response.secureUrl;
     } catch (e) {
       //
     }

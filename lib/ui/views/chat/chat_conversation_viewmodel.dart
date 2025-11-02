@@ -74,12 +74,11 @@ class ChatConversationViewModel extends BaseViewModel {
     rebuildUi();
   }
 
-  void onSendChatMessage({String? caption, String? attachmentUrl}) {
+  void onSendChatMessage(
+      {String? caption,
+      String? attachmentUrl,
+      ChatMessageType messageType = ChatMessageType.text}) {
     try {
-      ChatMessageType messageType = ChatMessageType.text;
-      if (attachmentUrl != null && attachmentUrl.isNotEmpty) {
-        messageType = ChatMessageType.picture;
-      }
       ChatMessage chatMessage = ChatMessage(
           text: chatTextInputController.text,
           caption: caption,
@@ -166,10 +165,22 @@ class ChatConversationViewModel extends BaseViewModel {
             context: ctx);
     if (resDataConfirm?["status"] == "send") {
       //handle send image
-      String? uploadedUrl = await _chatService.uploadImage(file);
-      if (uploadedUrl != null && uploadedUrl.isNotEmpty) {
-        String? caption = resDataConfirm?["caption"];
-        onSendChatMessage(caption: caption, attachmentUrl: uploadedUrl);
+      chatTextInputController.clear();
+      chatTextFieldFocusNode.unfocus();
+      try {
+        setBusy(true);
+        String? uploadedUrl = await _chatService.uploadImage(file);
+        if (uploadedUrl != null && uploadedUrl.isNotEmpty) {
+          String? caption = resDataConfirm?["caption"];
+          onSendChatMessage(
+              caption: caption,
+              attachmentUrl: uploadedUrl,
+              messageType: ChatMessageType.picture);
+        }
+      } catch (e) {
+        //
+      } finally {
+        setBusy(false);
       }
     }
   }
