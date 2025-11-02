@@ -19,6 +19,7 @@ class TextFieldWidget extends StatelessWidget {
   final double borderRadius;
   final Widget? suffixWidget;
   final String? initialValue;
+  final TextStyle? hintStyle;
   final TextEditingController? controller;
   const TextFieldWidget(
       {super.key,
@@ -29,6 +30,7 @@ class TextFieldWidget extends StatelessWidget {
       this.initialValue,
       this.isReadOnly = false,
       this.textInputType = TextInputType.name,
+      this.hintStyle,
       this.hintText = "",
       this.obscureText = false,
       this.onlyUnderlineBorder = false,
@@ -50,13 +52,12 @@ class TextFieldWidget extends StatelessWidget {
         autofocus: false,
         obscureText: obscureText,
         onTap: onTap,
-        style: kfBodyMedium(context),
+        style: hintStyle ?? kfBodyMedium(context),
         keyboardType: textInputType,
         maxLines: enableMultiLine ? null : 1,
         decoration: InputDecoration(
             hintText: hintText,
-            // hintStyle: AppTheme.getTextStyle(themeData.textTheme.subtitle2,
-            //     letterSpacing: 0.1, color: Colors.black54, fontWeight: 500),
+            hintStyle: hintStyle,
             border: onlyUnderlineBorder
                 ? UnderlineInputBorder(
                     borderRadius: BorderRadius.all(

@@ -1,6 +1,7 @@
 import 'package:enkoy_chat/ui/common/app_colors.dart';
 import 'package:enkoy_chat/ui/common/dimension.dart';
 import 'package:enkoy_chat/ui/common/font.dart';
+import 'package:enkoy_chat/ui/common/icons.dart';
 import 'package:enkoy_chat/ui/common/utils/avatar_utils.dart';
 import 'package:enkoy_chat/ui/common/utils/datetime_utils.dart';
 import 'package:enkoy_chat/ui/common/widgets/app_bar_widget.dart';
@@ -30,6 +31,13 @@ class SearchUserView extends StackedView<SearchUserViewModel> {
           : CustomScrollView(
               slivers: [
                 AppBarWidget(
+                  leading: GestureDetector(
+                    onTap: viewModel.onBack,
+                    child: Icon(
+                      kiArrowBack,
+                      color: kcOnPrimary(context),
+                    ),
+                  ),
                   titleWidget: SizedBox(
                     height: 50,
                     width: kdScreenWidth(context) * .8,
@@ -37,6 +45,8 @@ class SearchUserView extends StackedView<SearchUserViewModel> {
                       onlyUnderlineBorder: true,
                       borderRadius: 2,
                       hintText: "Type user email...",
+                      hintStyle:
+                          kfBodyMedium(context, color: kcOnPrimary(context)),
                       onChanged: viewModel.onSearchValChanged,
                       suffixWidget: Visibility(
                         visible: viewModel.busy(viewModel.searchResults),

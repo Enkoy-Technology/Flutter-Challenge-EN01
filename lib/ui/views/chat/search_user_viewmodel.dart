@@ -58,4 +58,8 @@ class SearchUserViewModel extends BaseViewModel {
         chatConversation: chatConv);
     setBusy(false);
   }
+
+  void onBack() {
+    _navigationService.back();
+  }
 }
