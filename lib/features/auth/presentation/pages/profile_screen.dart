@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/core/services/presence_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_chat_app/core/config/app_router.dart';
@@ -104,16 +105,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
 
       // Upload new file
-      final imageUrl = await storageService.uploadFile(
-        oldPath,
-        file,
-      );
+      final imageUrl = await storageService.uploadFile(oldPath, file);
 
       // Update Firestore
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .update({'avatarUrl': imageUrl});
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).update(
+        {'avatarUrl': imageUrl},
+      );
 
       // Refresh user data
       await _fetchUserData();
@@ -144,9 +141,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _updateName() async {
     if (_nameController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Name cannot be empty')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Name cannot be empty')));
       return;
     }
 
@@ -172,9 +169,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } catch (e) {
       setState(() => isUpdating = false);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error updating name: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error updating name: $e')));
       }
     }
   }
@@ -200,6 +197,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (confirm == true) {
       await FirebaseAuth.instance.signOut();
+      final presenceService = PresenceService();
+      presenceService.setOffline();
+      await presenceService.cleanup();
       if (mounted) {
         Navigator.pushReplacementNamed(context, AppRouter.login);
       }
@@ -251,14 +251,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       // App Settings
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: _buildAppSettings(context, themeService, preferencesService),
+                        child: _buildAppSettings(
+                          context,
+                          themeService,
+                          preferencesService,
+                        ),
                       ),
                       const SizedBox(height: 20),
 
                       // Notification Settings
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: _buildNotificationSettings(context, preferencesService),
+                        child: _buildNotificationSettings(
+                          context,
+                          preferencesService,
+                        ),
                       ),
                       const SizedBox(height: 32),
 
@@ -325,11 +332,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ? NetworkImage(userModel!.avatarUrl!)
                         : null,
                     child: userModel?.avatarUrl == null
-                        ? Icon(
-                            Icons.person,
-                            size: 64,
-                            color: Colors.white,
-                          )
+                        ? Icon(Icons.person, size: 64, color: Colors.white)
                         : null,
                   ),
                 ),
@@ -342,7 +345,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       child: const Center(
                         child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         ),
                       ),
                     ),
@@ -425,7 +430,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final colorScheme = theme.colorScheme;
     final brightness = theme.brightness;
     final isDark = brightness == Brightness.dark;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -472,7 +477,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     child: Icon(
                       Icons.person,
-                      color: isDark ? colorScheme.primary : Colors.blue.shade700,
+                      color: isDark
+                          ? colorScheme.primary
+                          : Colors.blue.shade700,
                       size: 20,
                     ),
                   ),
@@ -493,7 +500,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     decoration: InputDecoration(
                       hintText: 'Enter your name',
                       hintStyle: TextStyle(
-                        color: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
+                        color: isDark
+                            ? Colors.grey.shade500
+                            : Colors.grey.shade400,
                       ),
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.zero,
@@ -511,7 +520,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             shape: BoxShape.circle,
                           ),
                           child: IconButton(
-                            icon: const Icon(Icons.check, color: Colors.white, size: 18),
+                            icon: const Icon(
+                              Icons.check,
+                              color: Colors.white,
+                              size: 18,
+                            ),
                             onPressed: _updateName,
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(
@@ -572,7 +585,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final colorScheme = theme.colorScheme;
     final brightness = theme.brightness;
     final isDark = brightness == Brightness.dark;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -600,10 +613,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             decoration: BoxDecoration(
               gradient: themeService.isDarkMode
                   ? LinearGradient(
-                      colors: [
-                        Colors.grey.shade800,
-                        Colors.grey.shade700,
-                      ],
+                      colors: [Colors.grey.shade800, Colors.grey.shade700],
                     )
                   : null,
               color: themeService.isDarkMode ? null : colorScheme.surface,
@@ -632,10 +642,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               title: const Text(
                 'Dark Mode',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15,
-                ),
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
               ),
               subtitle: Text(
                 themeService.isDarkMode
@@ -663,7 +670,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final colorScheme = theme.colorScheme;
     final brightness = theme.brightness;
     final isDark = brightness == Brightness.dark;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -708,10 +715,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 title: const Text(
                   'Enable Notifications',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
                 ),
                 subtitle: Text(
                   'Receive push notifications',
@@ -751,10 +755,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 title: const Text(
                   'Sound',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
                 ),
                 subtitle: Text(
                   'Play sound for notifications',
@@ -795,10 +796,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 title: const Text(
                   'Vibration',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
                 ),
                 subtitle: Text(
                   'Vibrate for notifications',
@@ -823,10 +821,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            Colors.red.shade600,
-            Colors.red.shade500,
-          ],
+          colors: [Colors.red.shade600, Colors.red.shade500],
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
@@ -874,16 +869,14 @@ class _ModernProfileHeader extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final brightness = theme.brightness;
     final isDark = brightness == Brightness.dark;
-    
+
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: isDark
-                ? Colors.black54
-                : Colors.black.withOpacity(0.05),
+            color: isDark ? Colors.black54 : Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -920,4 +913,3 @@ class _ModernProfileHeader extends StatelessWidget {
     );
   }
 }
-
