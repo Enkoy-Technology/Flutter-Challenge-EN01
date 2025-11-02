@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:flutter/foundation.dart';
 import '../models/user_model.dart';
 import 'user_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -56,8 +57,12 @@ class AuthService {
             if (token != null) {
               await userService.updateUserFcmToken(firebaseUser.uid, token);
             }
-          } catch (e) {}
-        } catch (e) {}
+          } catch (e) {
+            debugPrint('Error updating FCM token: $e');
+          }
+        } catch (e) {
+          debugPrint('Error creating user profile: $e');
+        }
       }
       return currentUser;
     } catch (e) {
@@ -84,6 +89,7 @@ class AuthService {
         try {
           await user.updateDisplayName(name);
         } catch (displayNameError) {
+          debugPrint('Error updating display name: $displayNameError');
         }
 
         try {
@@ -94,7 +100,9 @@ class AuthService {
             if (token != null) {
               await userService.updateUserFcmToken(user.uid, token);
             }
-          } catch (e) {}
+          } catch (e) {
+            debugPrint('Error updating FCM token: $e');
+          }
         } catch (e) {
           rethrow;
         }
@@ -117,7 +125,9 @@ class AuthService {
         if (currentUser != null) {
           try {
             await currentUser.updateDisplayName(name);
-          } catch (displayNameError) {}
+          } catch (displayNameError) {
+            debugPrint('Error updating display name: $displayNameError');
+          }
 
           try {
             final userService = UserService();
@@ -128,7 +138,9 @@ class AuthService {
               if (token != null) {
                 await userService.updateUserFcmToken(currentUser.uid, token);
               }
-            } catch (e) {}
+            } catch (e) {
+              debugPrint('Error updating FCM token: $e');
+            }
 
             return User(
               id: currentUser.uid,

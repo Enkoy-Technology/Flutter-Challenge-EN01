@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import '../models/chat_conversation_model.dart';
 
 class ChatListService {
@@ -110,6 +111,7 @@ class ChatListService {
         }
       }
     } catch (e) {
+      debugPrint('Error incrementing unread count: $e');
     }
   }
 
@@ -119,6 +121,7 @@ class ChatListService {
         'unreadCounts.$userId': 0,
       });
     } catch (e) {
+      debugPrint('Error resetting unread count: $e');
     }
   }
 }

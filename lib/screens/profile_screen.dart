@@ -97,6 +97,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         try {
           await firebaseUser.updateDisplayName(newName);
         } catch (e) {
+          debugPrint('Error updating display name: $e');
         }
       }
 
@@ -227,7 +228,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           filled: true,
                           fillColor: _isSelf && _isEditing
                               ? Theme.of(context).colorScheme.surface
-                              : Theme.of(context).colorScheme.background,
+                              : Theme.of(context).colorScheme.surface,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -255,7 +256,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           labelText: 'Email',
                           prefixIcon: const Icon(Icons.email),
                           filled: true,
-                          fillColor: Theme.of(context).colorScheme.background,
+                          fillColor: Theme.of(context).colorScheme.surface,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),

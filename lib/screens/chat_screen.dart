@@ -48,7 +48,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     Future(() {
       try {
         ref.read(currentChatProvider.notifier).state = null;
-      } catch (e) {}
+      } catch (e) {
+        debugPrint('Error deactivating chat screen: $e');
+      }
     });
     super.deactivate();
   }

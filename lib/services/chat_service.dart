@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import '../models/message_model.dart';
 import 'chat_list_service.dart';
 
@@ -68,7 +69,7 @@ class ChatService implements IChatService {
     try {
       await _collection.doc(messageId).update({'status': status});
     } catch (e) {
-      
+      debugPrint('Error updating message status: $e');
     }
   }
 
@@ -87,6 +88,7 @@ class ChatService implements IChatService {
       }
       await batch.commit();
     } catch (e) {
+      debugPrint('Error marking messages as delivered: $e');
     }
   }
 
@@ -104,6 +106,7 @@ class ChatService implements IChatService {
       }
       await batch.commit();
     } catch (e) {
+      debugPrint('Error marking messages as seen: $e');
     }
   }
 }

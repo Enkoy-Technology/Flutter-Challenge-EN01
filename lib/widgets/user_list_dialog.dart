@@ -114,7 +114,7 @@ class _UserListDialogState extends ConsumerState<UserListDialog> {
             ),
             Expanded(
               child: Container(
-                color: Theme.of(context).colorScheme.background,
+                color: Theme.of(context).colorScheme.surface,
                 child: currentUserId.isEmpty
                     ? const Center(child: CircularProgressIndicator())
                     : ref.watch(allUsersProvider(currentUserId)).when(
