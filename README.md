@@ -11,9 +11,14 @@ A production-ready Flutter chat application built with real-time messaging capab
 ## 📸 Screenshots
 
 <div align="center">
-  <img src="screenshots/1.jpg" alt="Screenshot 1" width="300"/>
-  <img src="screenshots/2.jpg" alt="Screenshot 2" width="300"/>
-  <img src="screenshots/3.jpg" alt="Screenshot 3" width="300"/>
+ <img src="screenshots/_1.jpg" alt="Screenshot 1" width="300"/>
+  <img src="screenshots/_2.jpg" alt="Screenshot 2" width="300"/>
+  <img src="screenshots/_3.jpg" alt="Screenshot 3" width="300"/>
+  <img src="screenshots/2.jpg" alt="Screenshot 1" width="300"/>
+  <img src="screenshots/3.jpg" alt="Screenshot 1" width="300"/>
+  <img src="screenshots/4.jpg" alt="Screenshot 1" width="300"/>
+  <img src="screenshots/5.jpg" alt="Screenshot 2" width="300"/>
+  <img src="screenshots/6.jpg" alt="Screenshot 3" width="300"/>
 </div>
 
 ---
@@ -239,3 +244,7 @@ lib/
 - **Stream-based State**: Real-time updates via Firestore streams
 
 ---
+
+## 👨‍💻 Author
+
+**Amanuel.T (AKA: Emant)**
