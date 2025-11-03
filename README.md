@@ -410,9 +410,9 @@ copies or substantial portions of the Software.
 
 ## 👨‍💻 Author
 
-**Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
+**Yordanos Bogale**
+- GitHub: [@yordanos-bogale5](https://github.com/yourusername)
+- Email: bogaleyordanos64@gmail.com
 
 ---
 
