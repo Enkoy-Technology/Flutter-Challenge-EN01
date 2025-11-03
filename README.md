@@ -411,7 +411,7 @@ copies or substantial portions of the Software.
 ## 👨‍💻 Author
 
 **Yordanos Bogale**
-- GitHub: [@yordanos-bogale5](https://github.com/yourusername)
+- GitHub: [@yordanos-bogale5](https://github.com/yordanos-bogale5)
 - Email: bogaleyordanos64@gmail.com
 
 ---
