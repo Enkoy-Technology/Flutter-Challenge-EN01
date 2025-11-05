@@ -70,4 +70,3 @@ git commit -m "Complete real-time chat challenge"
 </code></pre>
 
 
-# Test workflow changes

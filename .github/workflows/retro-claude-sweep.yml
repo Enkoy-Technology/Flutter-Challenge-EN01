@@ -25,10 +25,22 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
-          # For testing, just hardcode PR #1
-          echo '{"include":[{"pr":1}]}' > matrix.json
+          # Get all open PRs and filter out test PRs
+          prs=$(gh api repos/${{ github.repository }}/pulls -F state=open -F per_page=100 | jq -r '.[] | select(.head.ref | test("^test-") | not) | .number')
+          if [ -z "$prs" ]; then
+            echo '{"include":[]}' > matrix.json
+          else
+            printf '{"include":[' > matrix.json
+            first=1
+            for p in $prs; do
+              if [ $first -eq 0 ]; then printf ',' >> matrix.json; fi
+              printf '{"pr":%s}' "$p" >> matrix.json
+              first=0
+            done
+            printf ']}\n' >> matrix.json
+          fi
           echo "matrix=$(cat matrix.json)" >> "$GITHUB_OUTPUT"
-          echo "Testing with PR #1 only"
+          echo "Found PRs: $prs"
 
   review:
     needs: list-prs
@@ -58,7 +70,6 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          show_full_output: true
           prompt: |
             Please review PR #${{ matrix.pr }} in this Flutter repository.
 
