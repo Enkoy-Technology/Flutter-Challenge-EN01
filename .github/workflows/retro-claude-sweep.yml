@@ -2,14 +2,13 @@ name: Retro Claude Static Review (Flutter PRs)
 
 on:
   workflow_dispatch: {}   # run manually for already-open PRs
-  pull_request:
-    branches: [ testing ]  # only run on PRs to testing branch for now
 
 permissions:
   contents: read
   pull-requests: write
   issues: write
-  id-token: write
+  actions: read
+  metadata: read
 
 env:
   DEFAULT_BRANCH: main
@@ -27,21 +26,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
-          # Get all open PRs and filter out test PRs (limit to PR #1 for testing)
-          prs=$(gh api repos/${{ github.repository }}/pulls -F state=open -F per_page=100 | jq -r '.[] | select(.head.ref | test("^test-") | not) | select(.number == 1) | .number')
-          if [ -z "$prs" ]; then
-            echo '{"include":[]}' > matrix.json
-          else
-            printf '{"include":[' > matrix.json
-            first=1
-            for p in $prs; do
-              if [ $first -eq 0 ]; then printf ',' >> matrix.json; fi
-              printf '{"pr":%s}' "$p" >> matrix.json
-              first=0
-            done
-            printf ']}\n' >> matrix.json
-          fi
+          # For testing, just hardcode PR #1
+          echo '{"include":[{"pr":1}]}' > matrix.json
           echo "matrix=$(cat matrix.json)" >> "$GITHUB_OUTPUT"
+          echo "Testing with PR #1 only"
 
   review:
     needs: list-prs
