@@ -87,9 +87,9 @@ jobs:
             --allowed-tools
             "Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(gh pr edit:*),Bash(gh pr list:*),Bash(git fetch:*),Bash(git checkout:*),Bash(git log:*),Bash(git show:*)"
           prompt: |
-            Evaluate PR #${{ matrix.pr }}. Post only:
+            Evaluate PR #${{ matrix.pr }}. Get PR title first, then post only:
 
-            **Score: X/100**
+            **PR: [Title] - Score: X/35 (X%)**
             - Real-time messaging: X/5
             - Architecture/Structure: X/5  
             - State management: X/5
@@ -109,13 +109,13 @@ jobs:
           PR: ${{ matrix.pr }}
         run: |
           body=$(gh pr view "$PR" --json comments -q '.comments[-1].body' || echo "")
-          score=$(echo "$body" | grep -Eo '([0-9]{2,3})\s*/\s*100' | head -1 | sed -E 's#/.*##' || echo "")
+          score=$(echo "$body" | grep -Eo '([0-9]{1,2})\s*/\s*35' | head -1 | sed -E 's#/.*##' || echo "")
           if [ -n "$score" ]; then
-            if [ "$score" -ge 85 ]; then 
+            if [ "$score" -ge 30 ]; then 
               gh pr edit "$PR" --add-label "evaluation:excellent" || true
-            elif [ "$score" -ge 70 ]; then 
+            elif [ "$score" -ge 25 ]; then 
               gh pr edit "$PR" --add-label "evaluation:good" || true
-            elif [ "$score" -ge 50 ]; then 
+            elif [ "$score" -ge 18 ]; then 
               gh pr edit "$PR" --add-label "evaluation:average" || true
             else 
               gh pr edit "$PR" --add-label "evaluation:needs-work" || true
