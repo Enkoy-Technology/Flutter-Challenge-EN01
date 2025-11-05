@@ -77,29 +77,27 @@ jobs:
           # Build single context file for Claude
           {
             echo "### CHALLENGE REQUIREMENTS"
-            cat <<'RBR'
-Flutter Real-Time Messaging App Challenge (static code review only)
-Core:
-- Real-time messaging plumbing present (Firestore/Supabase Realtime/WebSockets/etc.).
-- Each message includes sender name, text, formatted timestamp.
-- Conversation UI (bubbles), input at bottom, auto-scroll on new/own send.
-Engineering:
-- Clean feature-based/layered architecture.
-- Consistent state management (Riverpod/Bloc/Provider/GetX).
-- Repository pattern for data access.
-- Reusable widgets + clear naming.
-- Error/empty/loading states.
-- Clear separation of UI vs business logic.
-Bonus (optional):
-- Basic identity (mock/random).
-- Chat list screen.
-- Message status (sent/delivered/seen).
-- Notifications.
-- Unit tests for message/time utils or basic logic.
-Notes:
-- Do NOT ask the candidate for any text/content.
-- Do NOT require running or building the app. Static code/diff analysis only.
-RBR
+            echo "Flutter Real-Time Messaging App Challenge (static code review only)"
+            echo "Core:"
+            echo "- Real-time messaging plumbing present (Firestore/Supabase Realtime/WebSockets/etc.)."
+            echo "- Each message includes sender name, text, formatted timestamp."
+            echo "- Conversation UI (bubbles), input at bottom, auto-scroll on new/own send."
+            echo "Engineering:"
+            echo "- Clean feature-based/layered architecture."
+            echo "- Consistent state management (Riverpod/Bloc/Provider/GetX)."
+            echo "- Repository pattern for data access."
+            echo "- Reusable widgets + clear naming."
+            echo "- Error/empty/loading states."
+            echo "- Clear separation of UI vs business logic."
+            echo "Bonus (optional):"
+            echo "- Basic identity (mock/random)."
+            echo "- Chat list screen."
+            echo "- Message status (sent/delivered/seen)."
+            echo "- Notifications."
+            echo "- Unit tests for message/time utils or basic logic."
+            echo "Notes:"
+            echo "- Do NOT ask the candidate for any text/content."
+            echo "- Do NOT require running or building the app. Static code/diff analysis only."
             echo
             echo "### CHANGED FILES"
             cat _files.txt || true
