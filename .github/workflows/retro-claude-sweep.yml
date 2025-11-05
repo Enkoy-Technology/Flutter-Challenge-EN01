@@ -1,0 +1,167 @@
+name: Retro Claude Static Review (Flutter PRs)
+
+on:
+  workflow_dispatch: {}   # run manually for already-open PRs
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  id-token: write
+
+env:
+  DEFAULT_BRANCH: main
+  MAX_PATCH_CHARS: "35000"
+
+jobs:
+  list-prs:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.collect.outputs.matrix }}
+    steps:
+      - name: Collect open PR numbers
+        id: collect
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          prs=$(gh api repos/${{ github.repository }}/pulls -F state=open -F per_page=100 | jq -r '.[].number')
+          if [ -z "$prs" ]; then
+            echo '{"include":[]}' > matrix.json
+          else
+            printf '{"include":[' > matrix.json
+            first=1
+            for p in $prs; do
+              if [ $first -eq 0 ]; then printf ',' >> matrix.json; fi
+              printf '{"pr":%s}' "$p" >> matrix.json
+              first=0
+            done
+            printf ']}\n' >> matrix.json
+          fi
+          echo "matrix=$(cat matrix.json)" >> "$GITHUB_OUTPUT"
+
+  review:
+    needs: list-prs
+    if: ${{ fromJson(needs.list-prs.outputs.matrix).include != '' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.list-prs.outputs.matrix) }}
+    steps:
+      - name: Prepare workspace
+        run: |
+          sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Fetch PR merge ref (no build/run, code only)
+        env:
+          PR: ${{ matrix.pr }}
+        run: |
+          set -e
+          mkdir -p work && cd work
+          git init
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "refs/pull/${PR}/merge"
+          git checkout FETCH_HEAD
+          git fetch --depth=1 origin "${DEFAULT_BRANCH}" || true
+          BASE=$(git merge-base HEAD "origin/${DEFAULT_BRANCH}" || git rev-list --max-parents=0 HEAD)
+
+          # Static context only: changed files + unified diff
+          git diff --name-only "$BASE"...HEAD > _files.txt || true
+          git diff -U0 "$BASE"...HEAD > _patch.txt || true
+
+          # Trim huge patches to keep prompt size sane
+          limit=${MAX_PATCH_CHARS:-35000}
+          head -c "$limit" _patch.txt > _patch_trunc.txt || true
+          [ $(wc -c < _patch.txt) -gt "$limit" ] && echo -e "\n# [truncated]" >> _patch_trunc.txt || true
+
+          # Build single context file for Claude
+          {
+            echo "### CHALLENGE REQUIREMENTS"
+            cat <<'RBR'
+Flutter Real-Time Messaging App Challenge (static code review only)
+Core:
+- Real-time messaging plumbing present (Firestore/Supabase Realtime/WebSockets/etc.).
+- Each message includes sender name, text, formatted timestamp.
+- Conversation UI (bubbles), input at bottom, auto-scroll on new/own send.
+Engineering:
+- Clean feature-based/layered architecture.
+- Consistent state management (Riverpod/Bloc/Provider/GetX).
+- Repository pattern for data access.
+- Reusable widgets + clear naming.
+- Error/empty/loading states.
+- Clear separation of UI vs business logic.
+Bonus (optional):
+- Basic identity (mock/random).
+- Chat list screen.
+- Message status (sent/delivered/seen).
+- Notifications.
+- Unit tests for message/time utils or basic logic.
+Notes:
+- Do NOT ask the candidate for any text/content.
+- Do NOT require running or building the app. Static code/diff analysis only.
+RBR
+            echo
+            echo "### CHANGED FILES"
+            cat _files.txt || true
+            echo
+            echo "### UNIFIED DIFF (truncated)"
+            cat _patch_trunc.txt || true
+          } > ../claude_context.md
+
+      - name: Checkout repo (so the action runs in the repo)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Claude static code review for this PR
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Strict, code-only rubric. No user-facing text/copy suggestions.
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ matrix.pr }}
+
+            You are an expert Flutter reviewer. Perform a **static code review only**.
+            Do **not** ask for or evaluate user-provided text/copy. Do **not** request to run/build the app.
+
+            Score each criterion 0–5 and then compute a weighted total out of 100:
+            - Real-time messaging plumbing present & correct: 20
+            - Message model completeness (sender, text, formatted timestamp): 10
+            - Chat UI behaviors (bubbles, input at bottom, auto-scroll): 15
+            - Architecture & layering (feature-based / clean separation): 15
+            - State management consistency (Riverpod/Bloc/Provider/GetX): 10
+            - Repository pattern & data access abstraction: 10
+            - Error/empty/loading states & general robustness: 10
+            - Git hygiene (branch name, PR title, commits): 5
+            - Security & secrets hygiene (no keys in repo, basic validation): 5
+
+            Consider bonus (optional) as tie-breaker notes only (identity, chat list, message status, notifications, unit tests).
+            If something is unclear from the diff, infer conservatively and note the uncertainty.
+
+            Output a concise Markdown comment:
+            1) A table: criterion vs 0–5 score
+            2) **Weighted total (0–100)** on one line
+            3) Bullet list of red flags (if any), else “None”
+            4) Recommendation: **Advance / Hold / Reject** with one short paragraph
+            5) Top 3 actionable fixes (one-liners, code-focused)
+
+            Do not include any requests for app text/copy. Keep it tight.
+          claude_args: >-
+            --allowed-tools
+            "Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(gh pr edit:*),Bash(gh pr list:*)"
+          files: |
+            claude_context.md
+
+      - name: Label by score (optional)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ matrix.pr }}
+        run: |
+          body=$(gh pr view "$PR" --json comments -q '.comments[-1].body' || echo "")
+          score=$(echo "$body" | grep -Eo '([0-9]{2,3})\s*/\s*100' | head -1 | sed -E 's#/.*##' || echo "")
+          if [ -n "$score" ]; then
+            if [ "$score" -ge 85 ]; then gh pr edit "$PR" --add-label "candidate:strong" || true; fi
+            if [ "$score" -ge 70 ] && [ "$score" -lt 85 ]; then gh pr edit "$PR" --add-label "candidate:hold" || true; fi
+            if [ "$score" -lt 70 ]; then gh pr edit "$PR" --add-label "candidate:reject" || true; fi
+          fi
