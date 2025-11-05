@@ -87,27 +87,21 @@ jobs:
             --allowed-tools
             "Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(gh pr edit:*),Bash(gh pr list:*),Bash(git fetch:*),Bash(git checkout:*),Bash(git log:*),Bash(git show:*)"
           prompt: |
-            Review PR #${{ matrix.pr }} for Flutter Real-Time Messaging App Challenge.
-            
-            Score 0-5 for each criterion and post a SHORT comment with:
+            Review PR #${{ matrix.pr }}. Post only:
             
             **Score: X/100**
+            - Real-time: X/5
+            - Architecture: X/5  
+            - State mgmt: X/5
+            - UI: X/5
+            - Code quality: X/5
             
-            **Quick Summary:**
-            - Real-time messaging: X/5 (brief note)
-            - Architecture: X/5 (brief note)  
-            - State management: X/5 (brief note)
-            - UI/UX: X/5 (brief note)
-            - Code quality: X/5 (brief note)
+            **Result:** Advance/Hold/Reject
             
-            **Recommendation:** Advance/Hold/Reject
-            
-            **Top 3 improvements:**
-            1. [specific fix]
-            2. [specific fix] 
-            3. [specific fix]
-            
-            Keep it concise and actionable. Focus on Flutter best practices.
+            **Fix:**
+            1. [specific]
+            2. [specific] 
+            3. [specific]
 
       - name: Label by score (optional)
         env:
