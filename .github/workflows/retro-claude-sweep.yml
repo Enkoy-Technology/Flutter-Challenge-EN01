@@ -60,13 +60,13 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
             Please review PR #${{ matrix.pr }} in this Flutter repository.
-            
+
             This is a Flutter Real-Time Messaging App Challenge submission. Please:
-            
+
             1. Examine the PR changes and code structure
             2. Score each criterion 0-5 and compute weighted total out of 100:
                - Real-time messaging plumbing (20 points)
-               - Message model completeness (10 points) 
+               - Message model completeness (10 points)
                - Chat UI behaviors (15 points)
                - Architecture & layering (15 points)
                - State management consistency (10 points)
@@ -74,14 +74,14 @@ jobs:
                - Error/loading states (10 points)
                - Git hygiene (5 points)
                - Security hygiene (5 points)
-            
+
             3. Post a comment on the PR with:
                - Score table
                - **Weighted total (0-100)**
                - Red flags (if any)
                - Recommendation: **Advance/Hold/Reject**
                - Top 3 actionable fixes
-            
+
             Focus on code quality, architecture, and Flutter best practices. Do not ask for text/copy content.
 
       - name: Label by score (optional)
