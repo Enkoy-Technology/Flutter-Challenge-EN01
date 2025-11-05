@@ -42,59 +42,11 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y jq
 
-      - name: Fetch PR merge ref (no build/run, code only)
+      - name: Setup for PR review
         env:
           PR: ${{ matrix.pr }}
         run: |
-          set -e
-          mkdir -p work && cd work
-          git init
-          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
-          git fetch --depth=1 origin "refs/pull/${PR}/merge"
-          git checkout FETCH_HEAD
-          git fetch --depth=1 origin "${DEFAULT_BRANCH}" || true
-          BASE=$(git merge-base HEAD "origin/${DEFAULT_BRANCH}" || git rev-list --max-parents=0 HEAD)
-
-          # Static context only: changed files + unified diff
-          git diff --name-only "$BASE"...HEAD > _files.txt || true
-          git diff -U0 "$BASE"...HEAD > _patch.txt || true
-
-          # Trim huge patches to keep prompt size sane
-          limit=${MAX_PATCH_CHARS:-35000}
-          head -c "$limit" _patch.txt > _patch_trunc.txt || true
-          [ $(wc -c < _patch.txt) -gt "$limit" ] && echo -e "\n# [truncated]" >> _patch_trunc.txt || true
-
-          # Build single context file for Claude
-          {
-            echo "### CHALLENGE REQUIREMENTS"
-            echo "Flutter Real-Time Messaging App Challenge (static code review only)"
-            echo "Core:"
-            echo "- Real-time messaging plumbing present (Firestore/Supabase Realtime/WebSockets/etc.)."
-            echo "- Each message includes sender name, text, formatted timestamp."
-            echo "- Conversation UI (bubbles), input at bottom, auto-scroll on new/own send."
-            echo "Engineering:"
-            echo "- Clean feature-based/layered architecture."
-            echo "- Consistent state management (Riverpod/Bloc/Provider/GetX)."
-            echo "- Repository pattern for data access."
-            echo "- Reusable widgets + clear naming."
-            echo "- Error/empty/loading states."
-            echo "- Clear separation of UI vs business logic."
-            echo "Bonus (optional):"
-            echo "- Basic identity (mock/random)."
-            echo "- Chat list screen."
-            echo "- Message status (sent/delivered/seen)."
-            echo "- Notifications."
-            echo "- Unit tests for message/time utils or basic logic."
-            echo "Notes:"
-            echo "- Do NOT ask the candidate for any text/content."
-            echo "- Do NOT require running or building the app. Static code/diff analysis only."
-            echo
-            echo "### CHANGED FILES"
-            cat _files.txt || true
-            echo
-            echo "### UNIFIED DIFF (truncated)"
-            cat _patch_trunc.txt || true
-          } > ../claude_context.md
+          echo "Preparing to review PR #${PR}"
 
       - name: Checkout repo (so the action runs in the repo)
         uses: actions/checkout@v4
@@ -107,34 +59,30 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
-            REPO: ${{ github.repository }}
-            PR NUMBER: ${{ matrix.pr }}
-
-            You are an expert Flutter reviewer. Perform a **static code review only**.
-            Do **not** ask for or evaluate user-provided text/copy. Do **not** request to run/build the app.
-
-            Score each criterion 0–5 and then compute a weighted total out of 100:
-            - Real-time messaging plumbing present & correct: 20
-            - Message model completeness (sender, text, formatted timestamp): 10
-            - Chat UI behaviors (bubbles, input at bottom, auto-scroll): 15
-            - Architecture & layering (feature-based / clean separation): 15
-            - State management consistency (Riverpod/Bloc/Provider/GetX): 10
-            - Repository pattern & data access abstraction: 10
-            - Error/empty/loading states & general robustness: 10
-            - Git hygiene (branch name, PR title, commits): 5
-            - Security & secrets hygiene (no keys in repo, basic validation): 5
-
-            Consider bonus (optional) as tie-breaker notes only (identity, chat list, message status, notifications, unit tests).
-            If something is unclear from the diff, infer conservatively and note the uncertainty.
-
-            Output a concise Markdown comment:
-            1) A table: criterion vs 0–5 score
-            2) **Weighted total (0–100)** on one line
-            3) Bullet list of red flags (if any), else "None"
-            4) Recommendation: **Advance / Hold / Reject** with one short paragraph
-            5) Top 3 actionable fixes (one-liners, code-focused)
-
-            Do not include any requests for app text/copy. Keep it tight.
+            Please review PR #${{ matrix.pr }} in this Flutter repository.
+            
+            This is a Flutter Real-Time Messaging App Challenge submission. Please:
+            
+            1. Examine the PR changes and code structure
+            2. Score each criterion 0-5 and compute weighted total out of 100:
+               - Real-time messaging plumbing (20 points)
+               - Message model completeness (10 points) 
+               - Chat UI behaviors (15 points)
+               - Architecture & layering (15 points)
+               - State management consistency (10 points)
+               - Repository pattern (10 points)
+               - Error/loading states (10 points)
+               - Git hygiene (5 points)
+               - Security hygiene (5 points)
+            
+            3. Post a comment on the PR with:
+               - Score table
+               - **Weighted total (0-100)**
+               - Red flags (if any)
+               - Recommendation: **Advance/Hold/Reject**
+               - Top 3 actionable fixes
+            
+            Focus on code quality, architecture, and Flutter best practices. Do not ask for text/copy content.
 
       - name: Label by score (optional)
         env:
