@@ -77,10 +77,10 @@ jobs:
             **Bonus Features Found:** [List any: user identity, chat list, message status, notifications, unit tests]
 
             **Senior-Level Assessment:**
-            - Strengths: [2-3 specific technical strengths]
-            - Areas for improvement: [2-3 specific areas that need senior-level attention]
+            - Strengths: [2-3 specific technical strengths found in their code]
+            - Areas for improvement: [2-3 specific issues/weaknesses found in their existing code that could be better]
 
-            Be critical - expect production-ready, senior-level Flutter code with proper architecture patterns.
+            Be critical - only comment on what exists in their code. Don't suggest adding new features, only improving existing implementation quality.
 
       - name: Label by score
         env:
