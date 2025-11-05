@@ -62,12 +62,12 @@ jobs:
             --allowed-tools
             "Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(gh pr edit:*),Bash(gh pr list:*),Bash(git fetch:*),Bash(git checkout:*),Bash(git log:*),Bash(git show:*)"
           prompt: |
-            Evaluate PR #${{ matrix.pr }} as a SENIOR-LEVEL Flutter developer assessment. 
-            
+            Evaluate PR #${{ matrix.pr }} as a SENIOR-LEVEL Flutter developer assessment.
+
             First get PR info and commit timeline using:
             - gh pr view ${{ matrix.pr }} for PR details
             - git log --oneline --reverse for first/last commits and count
-            
+
             Then post:
 
             **PR: [Title] - Score: X/100**
