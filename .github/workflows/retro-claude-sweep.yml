@@ -62,21 +62,25 @@ jobs:
             --allowed-tools
             "Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(gh pr edit:*),Bash(gh pr list:*),Bash(git fetch:*),Bash(git checkout:*),Bash(git log:*),Bash(git show:*)"
           prompt: |
-            Evaluate PR #${{ matrix.pr }}. Get PR title first, then post only:
+            Evaluate PR #${{ matrix.pr }} as a SENIOR-LEVEL Flutter developer assessment. Get PR title first, then post:
 
             **PR: [Title] - Score: X/100**
-            - Real-time messaging: X/20
-            - Architecture/Structure: X/15
-            - State management: X/15
-            - UI/UX design: X/15
-            - Code quality: X/15
-            - Error handling: X/10
-            - Performance: X/10
 
-            **Notes:**
-            - [brief observation]
-            - [brief observation]
-            - [brief observation]
+            **Core Requirements:**
+            - Real-Time & Streams: X/25 (Firestore/WebSocket streams, instant delivery, typing indicators)
+            - Arch. & Code Readability: X/20 (Clean/layered architecture, repository pattern, readable code)
+            - Separation of Concerns & State Management: X/20 (Riverpod/Bloc consistency, UI/business logic separation)
+            - Error Handling & Loading States: X/15 (Network errors, empty states, loading indicators)
+            - Features & UX: X/10 (Chat bubbles, auto-scroll, input field, responsive design)
+            - Git & Commit Quality: X/10 (Clear commits, proper branch naming, PR description)
+
+            **Bonus Features Found:** [List any: user identity, chat list, message status, notifications, unit tests]
+
+            **Senior-Level Assessment:**
+            - Strengths: [2-3 specific technical strengths]
+            - Areas for improvement: [2-3 specific areas that need senior-level attention]
+
+            Be critical - expect production-ready, senior-level Flutter code with proper architecture patterns.
 
       - name: Label by score
         env:
