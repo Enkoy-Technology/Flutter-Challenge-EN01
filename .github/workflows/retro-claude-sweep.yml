@@ -7,6 +7,7 @@ permissions:
   contents: read
   pull-requests: write
   issues: write
+  id-token: write
 
 env:
   DEFAULT_BRANCH: main
@@ -104,7 +105,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          # Strict, code-only rubric. No user-facing text/copy suggestions.
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
             REPO: ${{ github.repository }}
             PR NUMBER: ${{ matrix.pr }}
@@ -129,16 +130,11 @@ jobs:
             Output a concise Markdown comment:
             1) A table: criterion vs 0–5 score
             2) **Weighted total (0–100)** on one line
-            3) Bullet list of red flags (if any), else “None”
+            3) Bullet list of red flags (if any), else "None"
             4) Recommendation: **Advance / Hold / Reject** with one short paragraph
             5) Top 3 actionable fixes (one-liners, code-focused)
 
             Do not include any requests for app text/copy. Keep it tight.
-          claude_args: >-
-            --allowed-tools
-            "Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(gh pr edit:*),Bash(gh pr list:*)"
-          files: |
-            claude_context.md
 
       - name: Label by score (optional)
         env:
