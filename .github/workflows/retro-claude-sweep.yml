@@ -91,7 +91,7 @@ jobs:
 
             **PR: [Title] - Score: X/35 (X%)**
             - Real-time messaging: X/5
-            - Architecture/Structure: X/5  
+            - Architecture/Structure: X/5
             - State management: X/5
             - UI/UX design: X/5
             - Code quality: X/5
@@ -111,13 +111,13 @@ jobs:
           body=$(gh pr view "$PR" --json comments -q '.comments[-1].body' || echo "")
           score=$(echo "$body" | grep -Eo '([0-9]{1,2})\s*/\s*35' | head -1 | sed -E 's#/.*##' || echo "")
           if [ -n "$score" ]; then
-            if [ "$score" -ge 30 ]; then 
+            if [ "$score" -ge 30 ]; then
               gh pr edit "$PR" --add-label "evaluation:excellent" || true
-            elif [ "$score" -ge 25 ]; then 
+            elif [ "$score" -ge 25 ]; then
               gh pr edit "$PR" --add-label "evaluation:good" || true
-            elif [ "$score" -ge 18 ]; then 
+            elif [ "$score" -ge 18 ]; then
               gh pr edit "$PR" --add-label "evaluation:average" || true
-            else 
+            else
               gh pr edit "$PR" --add-label "evaluation:needs-work" || true
             fi
           fi
