@@ -76,11 +76,17 @@ jobs:
 
             **Bonus Features Found:** [List any: user identity, chat list, message status, notifications, unit tests]
 
-            **Senior-Level Assessment:**
-            - Strengths: [2-3 specific technical strengths found in their code]
-            - Areas for improvement: [2-3 specific issues/weaknesses found in their existing code that could be better]
+            **Strengths:**
+            1. [Specific technical strength with brief explanation]
+            2. [Specific technical strength with brief explanation]
+            3. [Specific technical strength with brief explanation]
 
-            Be critical - only comment on what exists in their code. Don't suggest adding new features, only improving existing implementation quality.
+            **Areas for improvement:**
+            1. [Specific code issue found with brief explanation of why it needs improvement]
+            2. [Specific code issue found with brief explanation of why it needs improvement]
+            3. [Specific code issue found with brief explanation of why it needs improvement]
+
+            Be detailed and specific. Only comment on what exists in their code. Don't suggest adding new features, only improving existing implementation quality.
 
       - name: Label by score
         env:
