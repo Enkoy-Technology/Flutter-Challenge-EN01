@@ -25,10 +25,35 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
-          # For testing, just process PR #1
-          echo '{"include":[{"pr":1}]}' > matrix.json
+          # Process all open PRs (all applicants)
+          response=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls?state=open&per_page=100")
+          
+          echo "API Response: $response"
+          
+          # Check if response is valid JSON and contains data
+          if echo "$response" | jq -e . >/dev/null 2>&1; then
+            prs=$(echo "$response" | jq -r '.[] | select(.head.ref | test("^test-") | not) | .number' 2>/dev/null || echo "")
+          else
+            echo "Invalid JSON response from GitHub API"
+            prs=""
+          fi
+          
+          if [ -z "$prs" ]; then
+            echo '{"include":[]}' > matrix.json
+          else
+            printf '{"include":[' > matrix.json
+            first=1
+            for p in $prs; do
+              if [ $first -eq 0 ]; then printf ',' >> matrix.json; fi
+              printf '{"pr":%s}' "$p" >> matrix.json
+              first=0
+            done
+            printf ']}\n' >> matrix.json
+          fi
           echo "matrix=$(cat matrix.json)" >> "$GITHUB_OUTPUT"
-          echo "Testing with PR #1 only"
+          echo "Found PRs: $prs"
 
   review:
     needs: list-prs
@@ -62,13 +87,13 @@ jobs:
             --allowed-tools
             "Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(gh pr edit:*),Bash(gh pr list:*),Bash(git fetch:*),Bash(git checkout:*),Bash(git log:*),Bash(git show:*)"
           prompt: |
-            Evaluate PR #${{ matrix.pr }} as a SENIOR-LEVEL Flutter developer assessment.
-
+            Evaluate PR #${{ matrix.pr }} as a SENIOR-LEVEL Flutter developer assessment. 
+            
             First get PR info and commit timeline using:
             - gh pr view ${{ matrix.pr }} for PR details
             - git log --oneline --reverse for first/last commits and count
-
-            Then post:
+            
+            Then use "gh pr comment ${{ matrix.pr }} --body" to post this evaluation comment to the PR:
 
             **PR: [Title] - Score: X/100**
             **Development Timeline:** First commit: [date] | Last commit: [date] | Total commits: X
