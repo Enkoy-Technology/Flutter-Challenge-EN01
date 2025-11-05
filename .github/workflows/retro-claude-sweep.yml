@@ -88,20 +88,22 @@ jobs:
             "Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(gh pr edit:*),Bash(gh pr list:*),Bash(git fetch:*),Bash(git checkout:*),Bash(git log:*),Bash(git show:*)"
           prompt: |
             Evaluate PR #${{ matrix.pr }}. Post only:
-            
+
             **Score: X/100**
-            - Real-time: X/5
-            - Architecture: X/5  
-            - State mgmt: X/5
-            - UI: X/5
+            - Real-time messaging: X/5
+            - Architecture/Structure: X/5  
+            - State management: X/5
+            - UI/UX design: X/5
             - Code quality: X/5
-            
+            - Error handling: X/5
+            - Performance: X/5
+
             **Notes:**
             - [brief observation]
             - [brief observation]
             - [brief observation]
 
-      - name: Label by score (optional)
+      - name: Label by score
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR: ${{ matrix.pr }}
@@ -109,7 +111,13 @@ jobs:
           body=$(gh pr view "$PR" --json comments -q '.comments[-1].body' || echo "")
           score=$(echo "$body" | grep -Eo '([0-9]{2,3})\s*/\s*100' | head -1 | sed -E 's#/.*##' || echo "")
           if [ -n "$score" ]; then
-            if [ "$score" -ge 85 ]; then gh pr edit "$PR" --add-label "candidate:strong" || true; fi
-            if [ "$score" -ge 70 ] && [ "$score" -lt 85 ]; then gh pr edit "$PR" --add-label "candidate:hold" || true; fi
-            if [ "$score" -lt 70 ]; then gh pr edit "$PR" --add-label "candidate:reject" || true; fi
+            if [ "$score" -ge 85 ]; then 
+              gh pr edit "$PR" --add-label "evaluation:excellent" || true
+            elif [ "$score" -ge 70 ]; then 
+              gh pr edit "$PR" --add-label "evaluation:good" || true
+            elif [ "$score" -ge 50 ]; then 
+              gh pr edit "$PR" --add-label "evaluation:average" || true
+            else 
+              gh pr edit "$PR" --add-label "evaluation:needs-work" || true
+            fi
           fi
