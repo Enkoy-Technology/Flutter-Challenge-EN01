@@ -87,21 +87,19 @@ jobs:
             --allowed-tools
             "Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(gh pr edit:*),Bash(gh pr list:*),Bash(git fetch:*),Bash(git checkout:*),Bash(git log:*),Bash(git show:*)"
           prompt: |
-            Review PR #${{ matrix.pr }}. Post only:
-
+            Evaluate PR #${{ matrix.pr }}. Post only:
+            
             **Score: X/100**
             - Real-time: X/5
-            - Architecture: X/5
+            - Architecture: X/5  
             - State mgmt: X/5
             - UI: X/5
             - Code quality: X/5
-
-            **Result:** Advance/Hold/Reject
-
-            **Fix:**
-            1. [specific]
-            2. [specific]
-            3. [specific]
+            
+            **Notes:**
+            - [brief observation]
+            - [brief observation]
+            - [brief observation]
 
       - name: Label by score (optional)
         env:
