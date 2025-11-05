@@ -91,7 +91,7 @@ jobs:
 
             **PR: [Title] - Score: X/100**
             - Real-time messaging: X/20
-            - Architecture/Structure: X/15  
+            - Architecture/Structure: X/15
             - State management: X/15
             - UI/UX design: X/15
             - Code quality: X/15
