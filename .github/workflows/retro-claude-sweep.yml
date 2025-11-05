@@ -90,13 +90,13 @@ jobs:
             Evaluate PR #${{ matrix.pr }}. Get PR title first, then post only:
 
             **PR: [Title] - Score: X/100**
-            - Real-time messaging: X/5
-            - Architecture/Structure: X/5  
-            - State management: X/5
-            - UI/UX design: X/5
-            - Code quality: X/5
-            - Error handling: X/5
-            - Performance: X/5
+            - Real-time messaging: X/20
+            - Architecture/Structure: X/15  
+            - State management: X/15
+            - UI/UX design: X/15
+            - Code quality: X/15
+            - Error handling: X/10
+            - Performance: X/10
 
             **Notes:**
             - [brief observation]
@@ -111,13 +111,13 @@ jobs:
           body=$(gh pr view "$PR" --json comments -q '.comments[-1].body' || echo "")
           score=$(echo "$body" | grep -Eo '([0-9]{1,3})\s*/\s*100' | head -1 | sed -E 's#/.*##' || echo "")
           if [ -n "$score" ]; then
-            if [ "$score" -ge 85 ]; then 
+            if [ "$score" -ge 85 ]; then
               gh pr edit "$PR" --add-label "evaluation:excellent" || true
-            elif [ "$score" -ge 70 ]; then 
+            elif [ "$score" -ge 70 ]; then
               gh pr edit "$PR" --add-label "evaluation:good" || true
-            elif [ "$score" -ge 50 ]; then 
+            elif [ "$score" -ge 50 ]; then
               gh pr edit "$PR" --add-label "evaluation:average" || true
-            else 
+            else
               gh pr edit "$PR" --add-label "evaluation:needs-work" || true
             fi
           fi
