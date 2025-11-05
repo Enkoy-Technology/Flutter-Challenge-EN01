@@ -87,30 +87,27 @@ jobs:
             --allowed-tools
             "Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(gh pr edit:*),Bash(gh pr list:*),Bash(git fetch:*),Bash(git checkout:*),Bash(git log:*),Bash(git show:*)"
           prompt: |
-            Please review PR #${{ matrix.pr }} in this Flutter repository.
+            Review PR #${{ matrix.pr }} for Flutter Real-Time Messaging App Challenge.
             
-            This is a Flutter Real-Time Messaging App Challenge submission. Please:
+            Score 0-5 for each criterion and post a SHORT comment with:
             
-            1. Examine the PR changes and code structure
-            2. Score each criterion 0-5 and compute weighted total out of 100:
-               - Real-time messaging plumbing (20 points)
-               - Message model completeness (10 points) 
-               - Chat UI behaviors (15 points)
-               - Architecture & layering (15 points)
-               - State management consistency (10 points)
-               - Repository pattern (10 points)
-               - Error/loading states (10 points)
-               - Git hygiene (5 points)
-               - Security hygiene (5 points)
+            **Score: X/100**
             
-            3. Post a comment on the PR with:
-               - Score table
-               - **Weighted total (0-100)**
-               - Red flags (if any)
-               - Recommendation: **Advance/Hold/Reject**
-               - Top 3 actionable fixes
+            **Quick Summary:**
+            - Real-time messaging: X/5 (brief note)
+            - Architecture: X/5 (brief note)  
+            - State management: X/5 (brief note)
+            - UI/UX: X/5 (brief note)
+            - Code quality: X/5 (brief note)
             
-            Focus on code quality, architecture, and Flutter best practices. Do not ask for text/copy content.
+            **Recommendation:** Advance/Hold/Reject
+            
+            **Top 3 improvements:**
+            1. [specific fix]
+            2. [specific fix] 
+            3. [specific fix]
+            
+            Keep it concise and actionable. Focus on Flutter best practices.
 
       - name: Label by score (optional)
         env:
