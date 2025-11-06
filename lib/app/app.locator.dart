@@ -14,6 +14,8 @@ import 'package:stacked_shared/stacked_shared.dart';
 
 import '../services/auth_service.dart';
 import '../services/chat_service.dart';
+import 'package:enkoy_chat/interfaces/ichat_repository.dart';
+import 'package:enkoy_chat/services/repositories/firebase_chat_repository.dart';
 
 final locator = StackedLocator.instance;
 
@@ -30,5 +32,7 @@ Future<void> setupLocator({
   locator.registerLazySingleton(() => DialogService());
   locator.registerLazySingleton(() => NavigationService());
   locator.registerLazySingleton<IAuthService>(() => FirebaseAuthService());
+  locator
+      .registerLazySingleton<IChatRepository>(() => FirebaseChatRepository());
   locator.registerLazySingleton(() => ChatService());
 }
