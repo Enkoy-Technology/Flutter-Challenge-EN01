@@ -122,6 +122,29 @@ class ChatListView extends StackedView<ChatListViewModel> {
               child: StreamBuilder<List<ChatConversation>>(
                 stream: viewModel.chatConversationStream(),
                 builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Padding(
+                      padding: const EdgeInsets.all(kdSpaceXXLarge),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Failed to load conversations",
+                            style: kfBodyLarge(context, fontWeight: FontWeight.bold),
+                          ),
+                          kdSpaceSmall.height,
+                          Text(
+                            snapshot.error.toString(),
+                            style: kfBodySmall(context, color: kcGrey),
+                          ),
+                          kdSpaceLarge.height,
+                          AppActionButton(
+                              onPressed: viewModel.setUp,
+                              child: const Text("Retry"))
+                        ],
+                      ),
+                    );
+                  }
                   if (snapshot.connectionState == ConnectionState.waiting ||
                       snapshot.data == null) {
                     return const LoadingIndicator();
