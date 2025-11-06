@@ -33,6 +33,8 @@ class ChatConversationViewModel extends BaseViewModel {
   int maxTypingTresholdSec = 2;
   int maxOnlineWaitSec = 60;
 
+  StreamSubscription? _latestConversationSub;
+
   bool isActiveWithMe = false;
   bool isConverseeTyping = false;
 
@@ -92,16 +94,18 @@ class ChatConversationViewModel extends BaseViewModel {
       //sync lastupdated snapshot
       _syncUserLastUpdatedAt();
     } catch (e) {
-      //
+      log('onSendChatMessage error: $e');
     }
   }
 
   _listenToLatestConversation() {
-    _chatService
+    _latestConversationSub = _chatService
         .fetchSpecificConversationStream(chatConversationBase.id)
         .listen((chatConv) {
       latestConversation = chatConv;
-      _chatService.seenMyUnseenChats(latestConversation!, loadedChats);
+      if (latestConversation != null && loadedChats.isNotEmpty) {
+        _chatService.seenMyUnseenChats(latestConversation!, loadedChats);
+      }
       log("latest conv updated.");
     });
   }
@@ -141,7 +145,7 @@ class ChatConversationViewModel extends BaseViewModel {
       XFile? pickedPhoto = await AppDialogUtils.pickFromGallery();
       _handlePhotoSendWithCaption(ctx, pickedPhoto);
     } catch (e) {
-      //
+      log('onPickImage error: $e');
     }
   }
 
@@ -150,7 +154,7 @@ class ChatConversationViewModel extends BaseViewModel {
       XFile? capturedPhoto = await AppDialogUtils.captureFromCamera();
       _handlePhotoSendWithCaption(ctx, capturedPhoto);
     } catch (e) {
-      //
+      log('onCaptureFromCamera error: $e');
     }
   }
 
@@ -178,10 +182,23 @@ class ChatConversationViewModel extends BaseViewModel {
               messageType: ChatMessageType.picture);
         }
       } catch (e) {
-        //
+        log('uploadImage/send picture error: $e');
       } finally {
         setBusy(false);
       }
+    }
+  }
+
+  @override
+  void dispose() {
+    try {
+      chatTextInputController.dispose();
+      chatTextFieldFocusNode.dispose();
+      typingTimerUpdater?.cancel();
+      onlineStatusDeactivator?.cancel();
+      _latestConversationSub?.cancel();
+    } finally {
+      super.dispose();
     }
   }
 }
