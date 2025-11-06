@@ -9,6 +9,8 @@ import 'package:enkoy_chat/services/auth_service.dart';
 import 'package:enkoy_chat/ui/views/chat/chat_list_view.dart';
 import 'package:enkoy_chat/ui/views/chat/chat_conversation_view.dart';
 import 'package:enkoy_chat/services/chat_service.dart';
+import 'package:enkoy_chat/interfaces/ichat_repository.dart';
+import 'package:enkoy_chat/services/repositories/firebase_chat_repository.dart';
 import 'package:enkoy_chat/ui/views/auth/signup_view.dart';
 import 'package:enkoy_chat/ui/views/chat/search_user_view.dart';
 // @stacked-import
@@ -28,6 +30,7 @@ import 'package:enkoy_chat/ui/views/chat/search_user_view.dart';
     LazySingleton(classType: DialogService),
     LazySingleton(classType: NavigationService),
     LazySingleton<IAuthService>(classType: FirebaseAuthService),
+    LazySingleton<IChatRepository>(classType: FirebaseChatRepository),
     LazySingleton(classType: ChatService),
 // @stacked-service
   ],
